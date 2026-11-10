@@ -1,0 +1,174 @@
+/* Ciber Gonçalo: avatar em pixel art com balão de conversa */
+.cg {
+  --cg-bg: #141915;
+  --cg-ink: #e6eedf;
+  --cg-green: #9fe0a8;
+  position: fixed;
+  z-index: 20;
+  right: clamp(12px, 2vw, 28px);
+  bottom: clamp(12px, 2vw, 28px);
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none;
+}
+.cg > * { pointer-events: auto; }
+.cg--page { right: auto; left: clamp(12px, 2vw, 28px); flex-direction: row-reverse; }
+
+.cg-avatar {
+  position: relative;
+  flex: none;
+  width: 76px;
+  height: 84px;
+  padding: 0;
+  border: 1px solid rgba(159, 224, 168, 0.55);
+  border-radius: 6px;
+  background: var(--cg-bg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(10, 12, 10, 0.28), 0 0 0 4px rgba(20, 25, 21, 0.06);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cg-avatar:hover { transform: translateY(-3px); }
+.cg-avatar:focus-visible { outline: 2px solid var(--cg-green); outline-offset: 3px; }
+.cg-avatar img {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  image-rendering: pixelated;
+  border-radius: 3px;
+}
+.cg-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(20, 25, 21, 0.18) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.cg-scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent, rgba(159, 224, 168, 0.22), transparent);
+  animation: cg-sweep 3.6s linear infinite;
+}
+@keyframes cg-sweep { from { top: -30%; } to { top: 100%; } }
+.cg.is-talking .cg-avatar img { animation: cg-talk 0.32s steps(2) infinite; }
+@keyframes cg-talk {
+  0% { transform: translate(0, 0); filter: none; }
+  50% { transform: translate(0, -1px); filter: drop-shadow(1px 0 0 rgba(255, 60, 60, 0.55)) drop-shadow(-1px 0 0 rgba(60, 200, 255, 0.55)); }
+}
+.cg-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--fl-accent);
+  box-shadow: 0 0 0 2px var(--cg-bg);
+  animation: cg-ping 1.6s ease-out infinite;
+}
+@keyframes cg-ping { 0% { box-shadow: 0 0 0 2px var(--cg-bg), 0 0 0 2px rgba(200, 69, 44, 0.6); } 100% { box-shadow: 0 0 0 2px var(--cg-bg), 0 0 0 12px rgba(200, 69, 44, 0); } }
+
+.cg-bubble {
+  position: relative;
+  width: min(340px, calc(100vw - 120px));
+  padding: 14px 16px 16px;
+  border-radius: 10px;
+  background: var(--cg-bg);
+  color: var(--cg-ink);
+  box-shadow: 0 18px 50px rgba(10, 12, 10, 0.3);
+  animation: cg-pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.cg-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: 22px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--cg-bg);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+.cg--page .cg-bubble::after { right: auto; left: -6px; }
+@keyframes cg-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+
+.cg-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cg-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 9.5px/1 var(--fl-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cg-green);
+}
+.cg-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cg-green); box-shadow: 0 0 8px var(--cg-green); }
+.cg-min {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cg-ink);
+  opacity: 0.6;
+  font: 500 14px/1 var(--fl-mono);
+  cursor: pointer;
+}
+.cg-min:hover { opacity: 1; background: rgba(230, 238, 223, 0.08); }
+.cg-echo {
+  margin: 0 0 6px;
+  font: 500 10.5px/1.4 var(--fl-mono);
+  color: rgba(230, 238, 223, 0.5);
+}
+.cg-text {
+  margin: 0;
+  min-height: 3em;
+  font-family: var(--fl-serif);
+  font-size: 15.5px;
+  line-height: 1.45;
+  cursor: default;
+}
+.cg-caret { display: inline-block; width: 0.45em; height: 0.9em; margin-left: 2px; vertical-align: -0.1em; background: var(--cg-green); }
+.cg-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.cg-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; opacity: 0.35; transition: opacity 0.3s ease; }
+.cg-chips.is-in { opacity: 1; }
+.cg-chip {
+  appearance: none;
+  padding: 8px 11px;
+  border: 1px solid rgba(230, 238, 223, 0.28);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cg-ink);
+  font: 500 10px/1.2 var(--fl-mono);
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.cg-chip:hover { background: var(--cg-green); border-color: var(--cg-green); color: var(--cg-bg); }
+.cg-chip:focus-visible { outline: 1px solid var(--cg-green); outline-offset: 2px; }
+
+/* no herói o balão é mais estreito; abaixo de 1340px não abre sozinho durante o scroll (ver script.ts) */
+.cg--home .cg-bubble { width: 300px; }
+
+@media (max-width: 700px) {
+  .cg { right: 12px; bottom: 12px; left: 12px; justify-content: flex-end; }
+  .cg--page { left: 12px; flex-direction: row; justify-content: flex-end; }
+  .cg-avatar { width: 56px; height: 62px; }
+  .cg-bubble, .cg--home .cg-bubble { width: auto; min-width: 0; flex: 1; max-height: 60vh; overflow-x: hidden; overflow-y: auto; }
+  .cg-bubble::after, .cg--page .cg-bubble::after { left: auto; right: -6px; }
+  .cg-text { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-scan::after, .cg-badge, .cg.is-talking .cg-avatar img, .cg-bubble { animation: none; }
+}
