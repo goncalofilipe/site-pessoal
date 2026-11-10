@@ -6,7 +6,10 @@ Doze placas numa galeria horizontal (fisheye ao scroll, a partir do template Flo
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # gera dist/, estático, pronto para qualquer alojamento
+npm run publicar # build + envia dist/ para o branch gh-pages (GitHub Pages)
 ```
+
+O GitHub Pages está em "Deploy from a branch", a servir o branch `gh-pages`. O código fica na `main`; publicar é sempre um passo à parte, com `npm run publicar`.
 
 ## Onde mudar o quê
 
