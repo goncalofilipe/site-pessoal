@@ -1,6 +1,32 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import type { Art } from './content'
 import avatar from '../assets/ciber-goncalo-40.png'
+import { useLang } from './i18n'
+import { usePrefersReducedMotion } from './lib/motion'
+
+const ART_TEXT = {
+  pt: {
+    hello: 'Olá,', world: 'mundo.', caretX: 212, formTop: 'ISTEC · LOURES · MADRID',
+    sectors: 'três setores,', beat: 'um batimento.', noesisList: ['MEDTRONIC · SAÚDE', 'WORTEN · RETALHO', 'PARQUES DE SINTRA · PÚBLICO'],
+    lowcode: 'low-code,', volume: 'alto volume.',
+    parlTop: 'PARLAMENTO EUROPEU', parlFoot: 'ASSESSORIA POLÍTICA · REGULAÇÃO DIGITAL',
+    manage: 'Gerir e', code: 'programar.', prodTop: 'PRODUTO · ARQUITETURA', netPublic: 'REDE PÚBLICA', netInternal: 'REDE INTERNA',
+    apiSub: 'CONTAS · FILA', service: 'SERVIÇO', serviceSub: 'SÓ LIGA PARA FORA', prodFoot1: '5 APPS · 1 CMS · 5 CONTENTORES', prodFoot2: '~10 000 PESSOAS',
+    decide: 'Eu decido,', write: 'eles escrevem.', iaTop: 'CLAUDE CODE · AGENTES', online: 'CIBER GONÇALO · ONLINE',
+    t1: 'desenha a fila com reentregas', t2: 'os testes passam', t3: 'revê a fronteira de rede', t4: 'só liga para fora. ok',
+  },
+  en: {
+    hello: 'Hello,', world: 'world.', caretX: 176, formTop: 'ISTEC · LOURES · MADRID',
+    sectors: 'three sectors,', beat: 'one heartbeat.', noesisList: ['MEDTRONIC · HEALTH', 'WORTEN · RETAIL', 'PARQUES DE SINTRA · PUBLIC'],
+    lowcode: 'low-code,', volume: 'high volume.',
+    parlTop: 'EUROPEAN PARLIAMENT', parlFoot: 'POLITICAL ADVICE · DIGITAL REGULATION',
+    manage: 'Manage and', code: 'code.', prodTop: 'PRODUCT · ARCHITECTURE', netPublic: 'PUBLIC NETWORK', netInternal: 'INTERNAL NETWORK',
+    apiSub: 'ACCOUNTS · QUEUE', service: 'SERVICE', serviceSub: 'OUTBOUND ONLY', prodFoot1: '5 APPS · 1 CMS · 5 CONTAINERS', prodFoot2: '~10,000 PEOPLE',
+    decide: 'I decide,', write: 'they write.', iaTop: 'CLAUDE CODE · AGENTS', online: 'CYBER GONÇALO · ONLINE',
+    t1: 'design the queue with retries', t2: 'tests passing', t3: 'review the network boundary', t4: 'outbound only. ok',
+  },
+}
+const useArt = () => ART_TEXT[useLang()]
 
 // Composições em SVG (3:4) para as placas sem fotografia. Escalam com a placa.
 const serif = { fontFamily: 'var(--fl-serif)' }
@@ -17,20 +43,47 @@ function Frame({ ink, label, year, children }: { ink: string; label: string; yea
   )
 }
 
+// Animações em SMIL, em ciclo: cada elemento aparece numa fração `at` do ciclo e tudo recomeça no fim.
+// Com movimento reduzido, mostra-se tudo parado.
+function useLoop(dur: number) {
+  const reduced = usePrefersReducedMotion()
+  const id = useId().replace(/[^a-zA-Z0-9]/g, '')
+  const appear = (at: number, to = 1) =>
+    reduced ? null : <animate attributeName="opacity" values={`0;0;${to};${to};0`} keyTimes={`0;${at};${(at + 0.03).toFixed(3)};0.93;1`} dur={`${dur}s`} repeatCount="indefinite" />
+  return { reduced, id, appear, dur: `${dur}s` }
+}
+
 function Formacao() {
+  const a = useArt()
   const ink = '#24221e'
+  const { reduced, id, appear, dur } = useLoop(8)
+  // as duas linhas grandes escrevem-se da esquerda para a direita
+  const reveal = (from: number, to: number, w: number) =>
+    reduced ? null : <animate attributeName="width" values={`0;0;${w};${w};0`} keyTimes={`0;${from};${to};0.93;1`} dur={dur} repeatCount="indefinite" />
   return (
-    <Frame ink={ink} label="ISTEC · LOURES · MADRID" year="2012/2020">
+    <Frame ink={ink} label={a.formTop} year="2012/2020">
+      <defs>
+        <clipPath id={`${id}a`}>
+          <rect x="14" y="96" height="68" width={reduced ? 280 : 0}>{reveal(0.04, 0.16, 280)}</rect>
+        </clipPath>
+        <clipPath id={`${id}b`}>
+          <rect x="14" y="164" height="64" width={reduced ? 280 : 0}>{reveal(0.18, 0.36, 280)}</rect>
+        </clipPath>
+      </defs>
       {Array.from({ length: 22 }, (_, k) => (
         <line key={k} x1="18" x2="282" y1={60 + k * 14} y2={60 + k * 14} stroke={ink} strokeOpacity="0.07" strokeWidth="0.6" />
       ))}
-      <text x="18" y="150" fill={ink} fontSize="56" style={serif}>Olá,</text>
-      <text x="18" y="212" fill={ink} fontSize="56" style={{ ...serif, fontStyle: 'italic' }}>mundo.</text>
-      <rect x="214" y="172" width="4" height="42" fill="#c8452c">
-        <animate attributeName="opacity" values="1;1;0;0" dur="1.1s" repeatCount="indefinite" />
-      </rect>
+      <text x="18" y="150" fill={ink} fontSize="56" style={serif} clipPath={`url(#${id}a)`}>{a.hello}</text>
+      <text x="18" y="212" fill={ink} fontSize="56" style={{ ...serif, fontStyle: 'italic' }} clipPath={`url(#${id}b)`}>{a.world}</text>
+      <g opacity={reduced ? 1 : 0}>
+        {appear(0.36)}
+        <rect x={a.caretX} y="172" width="4" height="42" fill="#c8452c">
+          <animate attributeName="opacity" values="1;1;0;0" dur="1.1s" repeatCount="indefinite" />
+        </rect>
+      </g>
       {['Visual Basic', 'Java', 'Swift', 'C#', 'SQL'].map((l, k) => (
-        <text key={l} x="18" y={268 + k * 18} fill={ink} fontSize="8.5" style={mono} opacity={0.85 - k * 0.12}>
+        <text key={l} x="18" y={268 + k * 18} fill={ink} fontSize="8.5" style={mono} opacity={reduced ? 0.85 - k * 0.12 : 0}>
+          {appear(0.42 + k * 0.06, 0.85 - k * 0.12)}
           {String(k + 1).padStart(2, '0')}  {l.toUpperCase()}
         </text>
       ))}
@@ -39,15 +92,16 @@ function Formacao() {
 }
 
 function Pulso() {
+  const a = useArt()
   const ink = '#efe9dc'
   const d = 'M0 200 H70 l8 -6 l8 6 H112 l6 18 l12 -96 l12 120 l8 -42 H190 l8 -8 l8 8 H300'
   return (
     <Frame ink={ink} label="NOESIS · OUTSYSTEMS" year="2019/2020">
       <path d={d} fill="none" stroke={ink} strokeOpacity="0.12" strokeWidth="1" transform="translate(0 0)" />
       <path d={d} fill="none" stroke="#7fd1b9" strokeWidth="1.6" strokeLinejoin="round" pathLength={1} strokeDasharray="1" className="art-pulse" />
-      <text x="18" y="96" fill={ink} fontSize="28" style={{ ...serif, fontStyle: 'italic' }}>três setores,</text>
-      <text x="18" y="130" fill={ink} fontSize="28" style={serif}>um batimento.</text>
-      {['MEDTRONIC · SAÚDE', 'WORTEN · RETALHO', 'PARQUES DE SINTRA · PÚBLICO'].map((l, k) => (
+      <text x="18" y="96" fill={ink} fontSize="28" style={{ ...serif, fontStyle: 'italic' }}>{a.sectors}</text>
+      <text x="18" y="130" fill={ink} fontSize="28" style={serif}>{a.beat}</text>
+      {a.noesisList.map((l, k) => (
         <g key={l}>
           <line x1="18" x2="282" y1={292 + k * 30} y2={292 + k * 30} stroke={ink} strokeOpacity="0.2" strokeWidth="0.6" />
           <text x="18" y={310 + k * 30} fill={ink} fontSize="8.5" style={mono}>{l}</text>
@@ -58,6 +112,7 @@ function Pulso() {
 }
 
 function Fluxo() {
+  const a = useArt()
   const ink = '#24221e'
   const accent = '#c8452c'
   const node = (y: number, label: string) => (
@@ -82,13 +137,14 @@ function Fluxo() {
       <text x="238" y="225" fill={ink} fontSize="8" style={mono} textAnchor="middle">REST</text>
       <path d="M62 236 V262 H150 M238 236 V262 H150 V276" fill="none" stroke={ink} strokeWidth="0.9" />
       <circle cx="150" cy="285" r="9" fill={ink} />
-      <text x="18" y="352" fill={ink} fontSize="34" style={{ ...serif, fontStyle: 'italic' }}>low-code,</text>
-      <text x="18" y="384" fill={ink} fontSize="22" style={serif}>alto volume.</text>
+      <text x="18" y="352" fill={ink} fontSize="34" style={{ ...serif, fontStyle: 'italic' }}>{a.lowcode}</text>
+      <text x="18" y="384" fill={ink} fontSize="22" style={serif}>{a.volume}</text>
     </Frame>
   )
 }
 
 function Hemiciclo() {
+  const a = useArt()
   const ink = '#efe9dc'
   const seats: ReactNode[] = []
   const rows = 7
@@ -111,17 +167,18 @@ function Hemiciclo() {
     }
   }
   return (
-    <Frame ink={ink} label="PARLAMENTO EUROPEU" year="2025/">
+    <Frame ink={ink} label={a.parlTop} year="2025/">
       <text x="18" y="100" fill={ink} fontSize="52" style={serif}>AI Act</text>
       <text x="18" y="150" fill={ink} fontSize="38" style={{ ...serif, fontStyle: 'italic' }}>&amp; DSA</text>
       {seats}
       <line x1="40" x2="260" y1="338" y2="338" stroke={ink} strokeOpacity="0.25" strokeWidth="0.6" />
-      <text x="150" y="370" fill={ink} fontSize="8" style={mono} textAnchor="middle" opacity="0.7">ASSESSORIA POLÍTICA · REGULAÇÃO DIGITAL</text>
+      <text x="150" y="370" fill={ink} fontSize="8" style={mono} textAnchor="middle" opacity="0.7">{a.parlFoot}</text>
     </Frame>
   )
 }
 
 function Arquitetura() {
+  const a = useArt()
   const ink = '#24221e'
   const accent = '#2f6f5e'
   const box = (x: number, y: number, w: number, label: string, sub: string) => (
@@ -132,15 +189,15 @@ function Arquitetura() {
     </g>
   )
   return (
-    <Frame ink={ink} label="PRODUTO · ARQUITETURA" year="2025/2026">
-      <text x="18" y="88" fill={ink} fontSize="32" style={serif}>Gerir e</text>
-      <text x="18" y="122" fill={ink} fontSize="32" style={{ ...serif, fontStyle: 'italic' }}>programar.</text>
-      <text x="22" y="160" fill={ink} fontSize="6.5" style={mono} opacity="0.6">REDE PÚBLICA</text>
-      <text x="278" y="160" fill={accent} fontSize="6.5" style={mono} textAnchor="end">REDE INTERNA</text>
+    <Frame ink={ink} label={a.prodTop} year="2025/2026">
+      <text x="18" y="88" fill={ink} fontSize="32" style={serif}>{a.manage}</text>
+      <text x="18" y="122" fill={ink} fontSize="32" style={{ ...serif, fontStyle: 'italic' }}>{a.code}</text>
+      <text x="22" y="160" fill={ink} fontSize="6.5" style={mono} opacity="0.6">{a.netPublic}</text>
+      <text x="278" y="160" fill={accent} fontSize="6.5" style={mono} textAnchor="end">{a.netInternal}</text>
       <line x1="150" y1="150" x2="150" y2="380" stroke={accent} strokeWidth="0.9" strokeDasharray="3 3" />
       {box(22, 172, 104, 'WEB', 'REACT · MOBILE')}
-      {box(22, 262, 104, 'API', 'CONTAS · FILA')}
-      {box(174, 262, 104, 'SERVIÇO', 'SÓ LIGA PARA FORA')}
+      {box(22, 262, 104, 'API', a.apiSub)}
+      {box(174, 262, 104, a.service, a.serviceSub)}
       {box(174, 172, 104, 'CMS', 'DIRECTUS · DOCKER')}
       <path d="M74 212 V258" stroke={ink} strokeWidth="0.9" markerEnd="url(#seta)" />
       <path d="M174 282 H130" stroke={accent} strokeWidth="1.1" markerEnd="url(#seta-v)" className="art-flow" strokeDasharray="4 3" />
@@ -153,8 +210,8 @@ function Arquitetura() {
           <path d="M0 0 L6 3 L0 6 Z" fill={accent} />
         </marker>
       </defs>
-      <text x="18" y="350" fill={ink} fontSize="7.5" style={mono}>2 SITES · 1 CMS · 1 APP</text>
-      <text x="18" y="366" fill={ink} fontSize="7.5" style={mono} opacity="0.6">~10 000 PESSOAS</text>
+      <text x="18" y="350" fill={ink} fontSize="7.5" style={mono}>{a.prodFoot1}</text>
+      <text x="18" y="366" fill={ink} fontSize="7.5" style={mono} opacity="0.6">{a.prodFoot2}</text>
     </Frame>
   )
 }
@@ -188,29 +245,37 @@ function Reel() {
 }
 
 function Terminal() {
+  const a = useArt()
   const ink = '#d7e5d0'
+  const { reduced, appear, dur } = useLoop(9)
   const lines: [string, string][] = [
     ['$', 'claude'],
-    ['>', 'desenha a fila com reentregas'],
-    ['●', 'a ler apps/api/src/ponte.ts'],
-    ['●', '39 testes a passar'],
-    ['>', 'revê a fronteira de rede'],
-    ['●', 'só liga para fora. ok'],
+    ['>', a.t1],
+    ['●', 'apps/api/src/ponte.ts'],
+    ['●', a.t2],
+    ['>', a.t3],
+    ['●', a.t4],
   ]
+  const at = (k: number) => 0.06 + k * 0.1
+  // o cursor desce para a linha seguinte à medida que cada linha aparece
+  const cursorY = [164, ...lines.map((_, k) => 172 + (k + 1) * 20 - 8), 164]
+  const cursorT = [0, ...lines.map((_, k) => at(k).toFixed(3)), 0.93]
   return (
-    <Frame ink={ink} label="CLAUDE CODE · AGENTES" year="2025/">
-      <text x="18" y="88" fill={ink} fontSize="32" style={serif}>Eu decido,</text>
-      <text x="18" y="124" fill={ink} fontSize="30" style={{ ...serif, fontStyle: 'italic' }}>eles escrevem.</text>
+    <Frame ink={ink} label={a.iaTop} year="2025/">
+      <text x="18" y="88" fill={ink} fontSize="32" style={serif}>{a.decide}</text>
+      <text x="18" y="124" fill={ink} fontSize="30" style={{ ...serif, fontStyle: 'italic' }}>{a.write}</text>
       {lines.map(([p, t], k) => (
-        <text key={k} x="18" y={172 + k * 20} fill={p === '>' ? '#9fe0a8' : ink} fontSize="8.5" style={{ ...mono, letterSpacing: '0.02em' }} opacity={p === '●' ? 0.7 : 1}>
+        <text key={k} x="18" y={172 + k * 20} fill={p === '>' ? '#9fe0a8' : ink} fontSize="8.5" style={{ ...mono, letterSpacing: '0.02em' }} opacity={reduced ? (p === '●' ? 0.7 : 1) : 0}>
+          {appear(at(k), p === '●' ? 0.7 : 1)}
           {p}  {t}
         </text>
       ))}
-      <rect x="18" y="292" width="6" height="10" fill="#9fe0a8">
+      <rect x="18" y={reduced ? 292 : 164} width="6" height="10" fill="#9fe0a8">
         <animate attributeName="opacity" values="1;1;0;0" dur="1s" repeatCount="indefinite" />
+        {!reduced && <animate attributeName="y" calcMode="discrete" values={cursorY.join(';')} keyTimes={cursorT.join(';')} dur={dur} repeatCount="indefinite" />}
       </rect>
       <image href={avatar} x="214" y="306" width="66" height="72.6" style={{ imageRendering: 'pixelated' }} />
-      <text x="18" y="374" fill={ink} fontSize="7" style={mono} opacity="0.6">CIBER GONÇALO · ONLINE</text>
+      <text x="18" y="374" fill={ink} fontSize="7" style={mono} opacity="0.6">{a.online}</text>
     </Frame>
   )
 }

@@ -1,5 +1,11 @@
 import imgDiaspora from '../assets/diaspora.webp'
-import imgComunicador from '../assets/comunicador.webp'
+import imgNoesis from '../assets/noesis.webp'
+import imgAct from '../assets/act-digital.webp'
+import imgDiasporaLogo from '../assets/diaspora-logo.webp'
+import imgParlamento from '../assets/parlamento.webp'
+import imgProduto from '../assets/produto.webp'
+import imgComunicador from '../assets/comunicador-mic.webp'
+import imgVideoEditor from '../assets/video-editor.webp'
 import imgVideo from '../assets/video.webp'
 import imgEstrategia from '../assets/estrategia.webp'
 import imgBojarda from '../assets/bojarda.webp'
@@ -8,14 +14,17 @@ import imgReel2 from '../assets/galeria-reel-2.webp'
 import imgReel3 from '../assets/galeria-reel-3.webp'
 import imgReel4 from '../assets/galeria-reel-4.webp'
 import imgBojarda2 from '../assets/galeria-bojarda.webp'
-import imgForaDaBolha from '../assets/galeria-fora-da-bolha.webp'
+
+// Conteúdo em português. A versão inglesa está em content.en.ts e é sobreposta a esta (ver i18n.ts).
 
 export type Art = 'formacao' | 'pulso' | 'fluxo' | 'hemiciclo' | 'arquitetura' | 'reel' | 'terminal'
 export type Lente = 'codigo' | 'camara' | 'causa' | 'vida'
+// Animação da imagem (ver PlateFx.tsx e styles/fx.css)
+export type Fx = 'kenburns' | 'float' | 'rings' | 'stars' | 'spin' | 'rec'
 
 export type Plate = {
   slug: string
-  era: string // faceta mostrada por cima das imagens: «Era …»
+  era: string // faceta mostrada por cima das imagens, tal como está escrita
   year: number // ano em que a placa começa; o relógio interpola entre placas
   when: string
   title: string
@@ -24,6 +33,7 @@ export type Plate = {
   dark?: boolean // fundo escuro: texto claro na arte e na página
   src?: string
   art?: Art
+  fx?: Fx
   focus?: string
   lente: Lente
   page: {
@@ -51,20 +61,22 @@ export const PERSON = {
   email: 'goncalo.p.m.filipe@gmail.com',
   linkedin: 'https://www.linkedin.com/in/goncalo-p-m-filipe',
   instagram: 'https://www.instagram.com/goncalopmfilipe/',
-  cvPt: './cv/CV_Goncalo_Filipe_PT.pdf',
-  cvEn: './cv/CV_Goncalo_Filipe_EN.pdf',
+  tiktok: 'https://www.tiktok.com/@goncalopmfilipe',
+  cv: { pt: './cv/CV_Goncalo_Filipe_PT.pdf', en: './cv/CV_Goncalo_Filipe_EN.pdf' },
 }
 
-export const LENTES: Record<Lente, { label: string; first: string; text: string }> = {
+export type Lentes = Record<Lente, { label: string; first: string; text: string }>
+
+export const LENTES: Lentes = {
   codigo: {
     label: 'Código',
     first: 'noesis',
-    text: 'Para o lado do código, começa na Noesis e segue até aos agentes de IA. São sete anos de OutSystems e um de TypeScript com agentes.',
+    text: 'Para o lado do código, começa na Noesis e segue até aos agentes de IA. São sete anos de OutSystems e um de TypeScript com assistentes de IA.',
   },
   camara: {
     label: 'Câmara',
     first: 'comunicador',
-    text: 'Para o lado da câmara há três seguidas: a minha conta, a assessoria de comunicação e a edição de vídeo.',
+    text: 'Para o lado da câmara há duas seguidas: a minha conta e a edição de vídeo.',
   },
   causa: {
     label: 'Causa',
@@ -74,25 +86,25 @@ export const LENTES: Record<Lente, { label: string; first: string; text: string 
   vida: {
     label: 'Vida',
     first: 'bojarda',
-    text: 'Fora do ecrã há música, andebol e livros.',
+    text: 'Fora do ecrã há música, desporto e festivais.',
   },
 }
 
 export const PLATES: Plate[] = [
   {
     slug: 'formacao',
-    era: 'Era estudante',
+    era: 'As minhas habilitações',
     year: 2012,
     when: '2012 a 2020',
-    title: 'Do Visual Basic ao Swift',
+    title: 'Dos computadores dos amigos à consultoria',
     note: 'Formação · Lisboa e Madrid',
     tint: '#e6e1d5',
     art: 'formacao',
     lente: 'codigo',
     page: {
       kicker: '2012 a 2020 · Formação',
-      heading: 'Aprendi a programar no secundário e nunca mais parei.',
-      lead: 'Comecei num curso profissional de Informática de Gestão, passei por um CTeSP em desenvolvimento para dispositivos móveis e acabei a licenciatura em Informática no ISTEC. Pelo meio houve um Erasmus em Madrid, uma startup e um part-time na Domino’s para pagar as contas.',
+      heading: 'Arranjava os computadores da malta, aprendi a programar e não parei de ser do IT.',
+      lead: 'Comecei num curso profissional de Informática de Gestão, passei por um CTeSP em desenvolvimento para dispositivos móveis e acabei a licenciatura em Informática no ISTEC. Pelo meio houve um Erasmus em Madrid, uma startup e um part-time na Domino’s Pizza para pagar as contas.',
       stats: [
         { value: '3', label: 'certificações OutSystems' },
         { value: 'C1', label: 'inglês' },
@@ -118,7 +130,7 @@ export const PLATES: Plate[] = [
       tools: ['Java', 'Swift', 'C#', 'Visual Basic', 'SQL', 'PHP', 'WordPress'],
     },
     cg: {
-      intro: 'Aqui estão as origens: Visual Basic aos 15 anos, Swift aos 18 e um Erasmus em Madrid pelo meio.',
+      intro: 'Aqui estão as origens: Visual Basic aos 15 anos, Java e Swift aos 18 e um Erasmus em Madrid pelo meio.',
       more: 'Na licenciatura havia uma cadeira de Métodos de Comunicação. Na altura parecia um extra. Hoje é metade do meu trabalho.',
       qa: [
         {
@@ -138,18 +150,19 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'noesis',
-    era: 'Era consultor',
+    era: 'Consultor',
     year: 2019,
     when: '2019 a 2020',
-    title: 'Pacemakers, bilhetes e lojas',
+    title: 'Primeiros projetos em OutSystems',
     note: 'OutSystems · Noesis',
-    tint: '#1f2726',
+    tint: '#2a2622',
     dark: true,
-    art: 'pulso',
+    src: imgNoesis,
+    fx: 'kenburns',
     lente: 'codigo',
     page: {
       kicker: 'Jan. 2019 a nov. 2020 · OutSystems Developer · Noesis',
-      heading: 'O primeiro emprego levou-me à saúde, ao retalho e ao património.',
+      heading: 'A primeira consultora formou-me em OutSystems e Agile Scrum, e levou-me à saúde, ao retalho e ao património.',
       lead: 'Na Noesis desenvolvi aplicações Web e Mobile em OutSystems para três clientes. Trabalhei em equipas Agile e falei diretamente com os clientes nas fases de análise e de aceitação.',
       stats: [
         { value: '3', label: 'clientes: Medtronic, Worten e Parques de Sintra' },
@@ -166,10 +179,7 @@ export const PLATES: Plate[] = [
         },
         {
           title: 'Worten · retalho',
-          items: [
-            'App mobile em OutSystems, para iOS e Android, usada pelas equipas de loja na gestão diária.',
-            'Fiquei com as animações de front-end feitas à medida.',
-          ],
+          items: ['App mobile em OutSystems, para iOS e Android, usada pelas equipas de loja na gestão diária.', 'Fiquei com as animações de front-end feitas à medida.'],
         },
         {
           title: 'Parques de Sintra · setor público',
@@ -182,7 +192,7 @@ export const PLATES: Plate[] = [
       tools: ['OutSystems 11', 'Traditional Web', 'Reactive Web', 'Mobile iOS/Android', 'REST', 'OAuth', 'SQL'],
     },
     cg: {
-      intro: 'Primeiro emprego: um portal para ler pacemakers, uma app para as lojas da Worten e a bilheteira dos monumentos de Sintra.',
+      intro: 'Primeira consultora: um portal para ler pacemakers, uma app para as lojas da Worten e a bilheteira dos monumentos de Sintra.',
       more: 'No portal da Medtronic os dados vinham de leituras de pacemakers e seguiam para médicos. Isso obriga a outro cuidado com validações e permissões.',
       qa: [
         {
@@ -191,31 +201,33 @@ export const PLATES: Plate[] = [
         },
         {
           q: 'O que fazias na app da Worten?',
-          a: 'A app servia as equipas de loja na gestão diária, em iOS e Android. A minha parte mais visível foram as animações de front-end feitas à medida.',
+          a: 'A app servia as equipas de loja na gestão diária, em iOS e Android. A minha parte mais visível foram as animações de front-end e o sistema de autorização de login.',
         },
         {
           q: 'Como era o contacto com os clientes?',
-          a: 'Direto, nas fases de análise e nos testes de aceitação. Esclarecia dúvidas com quem ia usar a aplicação e acompanhava a validação.',
+          a: 'Direto, nas fases de análise e nos testes de aceitação. Esclarecia dúvidas com quem ia usar a aplicação e acompanhava a validação, sempre em metodologia Agile.',
         },
       ],
     },
   },
   {
     slug: 'act-digital',
-    era: 'Era consultor sénior',
+    era: 'consultor sénior',
     year: 2020,
     when: '2020 a 2025',
-    title: 'Quatro anos e meio na Randstad',
-    note: 'Senior OutSystems · act digital',
-    tint: '#dcd7cb',
-    art: 'fluxo',
+    title: 'Cinco anos na Alter Solutions / act digital',
+    note: 'Senior OutSystems · act digital · Randstad',
+    tint: '#a61c01',
+    dark: true,
+    src: imgAct,
+    fx: 'float',
     lente: 'codigo',
     page: {
-      kicker: 'Nov. 2020 a jun. 2025 · Senior OutSystems Developer · Alter Solutions / act digital',
-      heading: 'Aplicações para a Randstad e para os clientes dela, do modelo de dados à produção.',
-      lead: 'Na Alter Solutions, hoje act digital, fiz o ciclo completo de aplicações Reactive Web e Mobile em OutSystems 11, em equipas Scrum multinacionais. O cliente era a Randstad e os clientes dela nas telecomunicações e na energia.',
+      kicker: 'Nov. 2020 a jun. 2025 · Senior OutSystems Developer · Alter Solutions / act digital · Randstad',
+      heading: 'Aplicações para a Randstad e para os clientes dela, nas fábricas OutSystems de Portugal e internacionais.',
+      lead: 'Na Alter Solutions, hoje act digital, fiz o ciclo completo de aplicações Reactive Web e Mobile em OutSystems 11, em equipas Scrum multinacionais. O cliente era a Randstad e os clientes dela nas telecomunicações e na energia, cobrindo os seus serviços de contact center.',
       stats: [
-        { value: '4,5', label: 'anos no projeto Randstad' },
+        { value: '5', label: 'anos no projeto Randstad' },
         { value: '3', label: 'apps na plataforma de Team Building: backoffice, web e mobile' },
       ],
       sections: [
@@ -251,19 +263,19 @@ export const PLATES: Plate[] = [
       tools: ['OutSystems 11', 'BPT', 'Timers', 'Multi-tenancy', 'OAuth', 'REST', 'Google Maps API', 'SQL avançado', 'LifeTime', 'Scrum'],
     },
     cg: {
-      intro: 'Quatro anos e meio na Randstad. Aqui fui developer principal de uma plataforma global de team building.',
+      intro: 'Cinco anos na Randstad. Aprendi muito: discutir arquitetura, levantar requisitos, desenvolver funcionalidades sozinho.',
       more: 'Uma das peças mais curiosas desta fase: uma ferramenta que cruza vagas com trabalhadores usando polígonos no mapa. Um problema geográfico resolvido em low-code.',
       qa: [
         {
-          q: 'O que é multi-tenancy?',
-          a: 'Uma só aplicação a servir várias organizações ao mesmo tempo, cada uma com os seus dados separados. Cada organização vê só o que é seu, e eu mantenho uma única base de código.',
+          q: 'Porquê o multi-tenancy?',
+          a: 'Uma só aplicação a servir várias organizações ao mesmo tempo, cada uma com os seus dados separados. Devido à sua dimensão global, a Randstad precisava de áreas que só vissem o que é seu, com uma única base de código.',
         },
         {
-          q: 'O que é BPT?',
-          a: 'Business Process Technology, o motor de processos do OutSystems. Serve para fluxos longos, com passos humanos e automáticos, que podem durar dias. Usei-o nos processos do contact center.',
+          q: 'Porquê BPTs?',
+          a: 'Business Process Technology, o motor de processos do OutSystems. Serve para fluxos longos, com passos humanos e automáticos, que podem durar dias. Usei-o em processos complexos do contact center.',
         },
         {
-          q: 'Como tratavas a performance?',
+          q: 'Se és sénior, lidaste com performance?',
           a: 'Procurava os ecrãs e as consultas lentas no Service Center e nos logs, reescrevia as consultas e voltava a medir.',
         },
       ],
@@ -271,14 +283,15 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'diaspora',
-    era: 'Era dirigente associativo',
+    era: 'dirigente associativo',
     year: 2024,
     when: '2024 até hoje',
-    title: 'Raízes com rumo',
+    title: 'Diáspora',
     note: 'Presidente · Associação Diáspora',
     tint: '#1d6f86',
     dark: true,
-    src: imgDiaspora,
+    src: imgDiasporaLogo,
+    fx: 'rings',
     lente: 'causa',
     page: {
       kicker: 'Desde out. 2024 · Presidente da direção · Associação Cultural Raízes Com Rumo',
@@ -296,55 +309,45 @@ export const PLATES: Plate[] = [
         {
           title: 'O que faço',
           items: [
-            'Dirijo a associação com os outros dois membros da direção e trato da gestão corrente: burocracia, contas, atas e comunicação.',
+            'Dirijo a associação com os outros 9 membros da direção e trato da gestão corrente: burocracia, contas, atas e comunicação.',
             'Fiz o site da associação, com área pública e backoffice, em Next.js, TypeScript e Prisma.',
           ],
         },
-        {
-          title: 'Rádio',
-          items: [
-            'Propus à Rádio Movimento PT o programa Raízes: quinzenal, em direto, com conversas com imigrantes e descendentes que criam projetos, negócios e comunidade em Lisboa.',
-            'Apresentado por mim e pela María Molina, também da direção.',
-          ],
-        },
       ],
-      tools: ['Produção de eventos', 'Gestão associativa', 'Next.js', 'TypeScript', 'Prisma', 'Instagram'],
+      gallery: [{ src: imgDiaspora, alt: 'Cartaz do Barulho Bom, com músicos num miradouro de Lisboa' }],
+      tools: ['Produção de eventos', 'Gestão associativa', 'Instagram', 'Contabilidade empresarial'],
       links: [{ label: 'Instagram @diasporalx', href: 'https://www.instagram.com/diasporalx/' }],
     },
     cg: {
       intro: 'A Diáspora é a associação cultural a que presido. Festas, concertos e forró no miradouro, com e para quem veio de fora.',
-      more: 'Também fiz o site da associação, com backoffice. E propus um programa de rádio, o Raízes, para dar voz a quem constrói a comunidade.',
+      more: 'Também fiz o site da associação, com backoffice.',
       qa: [
         {
           q: 'Qual é o objetivo da associação?',
           a: 'Os estatutos dizem-no bem: inclusão cultural e social de pessoas imigrantes, com atividades culturais e suporte psicossocial. As festas são a porta de entrada.',
         },
         {
-          q: 'Como seria o programa de rádio?',
-          a: 'Cinquenta minutos, de quinze em quinze dias, em direto na internet. Uma conversa longa com o convidado, a rubrica «Uma música, uma origem», a agenda cultural da cidade e respostas a quem comentou.',
-        },
-        {
           q: 'Que tecnologia tem o site?',
-          a: 'Next.js 16 com TypeScript e Prisma, e um backoffice com autenticação onde a direção gere os conteúdos.',
+          a: 'Next.js 16 com TypeScript e SQL, e um backoffice com autenticação onde a direção gere os conteúdos.',
         },
       ],
     },
   },
   {
     slug: 'parlamento',
-    era: 'Era assessor político',
+    era: 'assessor político',
     year: 2025,
-    when: '2025 até hoje',
-    title: 'IA e plataformas na lei europeia',
+    when: '2025 a 2026',
+    title: 'Assessoria política',
     note: 'Assessor político · Parlamento Europeu',
-    tint: '#23293a',
-    dark: true,
-    art: 'hemiciclo',
+    tint: '#efe6c2',
+    src: imgParlamento,
+    fx: 'stars',
     lente: 'causa',
     page: {
-      kicker: 'Desde jun. 2025 · Assistente parlamentar · Parlamento Europeu',
-      heading: 'Assessoria política no Parlamento Europeu, com a regulação digital como especialidade.',
-      lead: 'Desde junho de 2025 trabalho num gabinete do Parlamento Europeu. Faço assessoria política em inteligência artificial e regulação de plataformas digitais, giro as redes sociais do gabinete e organizo o trabalho da equipa em Agile.',
+      kicker: 'Desde jun. 2025 · Assistente local · Parlamento Europeu',
+      heading: 'Assessoria política no Parlamento Europeu, com a regulação digital como especialidade e a gestão de redes sociais.',
+      lead: 'Assessoria política em comunicação, redes sociais, inteligência artificial e regulação de plataformas digitais. Introduzi também a organização do trabalho da equipa em Agile.',
       stats: [
         { value: 'AI Act', label: 'regulamento europeu da inteligência artificial' },
         { value: 'DSA', label: 'Digital Services Act, as regras das plataformas' },
@@ -355,28 +358,18 @@ export const PLATES: Plate[] = [
           items: [
             'AI Act: o regulamento que classifica os sistemas de IA por nível de risco.',
             'Digital Services Act: as responsabilidades das plataformas sobre o conteúdo que circula nelas.',
-            'Acompanho estes dossiês e traduzo-os em posições políticas e em conteúdo para o público.',
+            'Acompanhei estes dossiês e traduzi-os em posições políticas e em conteúdo para o público.',
           ],
         },
         {
           title: 'Organização do gabinete',
-          items: [
-            'Gestão do trabalho da equipa com práticas Agile.',
-            'Ponte entre a parte política e a parte técnica: sites, CMS e redes sociais.',
-          ],
-        },
-        {
-          title: 'Onde isto se liga ao resto',
-          items: [
-            'A gestão de produto e o desenvolvimento estão em «Dois sites, um CMS e uma app».',
-            'As redes e os vídeos estão em «A voz de um gabinete».',
-          ],
+          items: ['Gestão do trabalho da equipa com práticas Agile.', 'Gestão da comunicação em redes sociais.'],
         },
       ],
-      tools: ['AI Act', 'Digital Services Act', 'Regulação de plataformas', 'Agile', 'Jira'],
+      tools: ['AI Act', 'Digital Services Act', 'Regulação de plataformas', 'Agile', 'Jira', 'CapCut'],
     },
     cg: {
-      intro: 'Desde 2025 estou no Parlamento Europeu. A minha especialidade é a regulação digital: AI Act e Digital Services Act.',
+      intro: 'Em 2025, uma mudança: estou no Parlamento Europeu. A minha especialidade é a regulação digital, com o AI Act e o Digital Services Act, e a minha função é a gestão de redes sociais.',
       more: 'É aqui que tudo o resto se cruza: percebo o código que as leis querem regular e sei explicá-lo em 40 segundos num Reel.',
       qa: [
         {
@@ -396,32 +389,25 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'produto',
-    era: 'Era gestor de produto',
+    era: 'gestor de produto',
     year: 2025,
-    when: '2025 até hoje',
-    title: 'Dois sites, um CMS e uma app',
-    note: 'Gestor de produto e developer',
-    tint: '#e8e4da',
-    art: 'arquitetura',
+    when: 'Desde 2025',
+    title: 'Gestor de infraestrutura digital',
+    note: 'Gestor de produto e developer de uma organização política de 10 mil pessoas',
+    tint: '#f5f2e9',
+    src: imgProduto,
+    fx: 'spin',
     lente: 'codigo',
     page: {
       kicker: 'Desde 2025 · Project Manager, Product Manager e developer',
       heading: 'Gestão de produto com as mãos no código.',
-      lead: 'Para uma organização política com cerca de 10 000 pessoas, faço gestão de produto e desenvolvimento ao mesmo tempo. Levanto requisitos com quem não é técnico, desenho a solução, programo, ponho em produção e mantenho a infraestrutura.',
+      lead: 'Para uma organização política com cerca de 10 000 pessoas, faço gestão de produto e desenvolvimento ao mesmo tempo. Levanto requisitos com quem não é técnico, desenho a solução, programo, ponho em produção e mantenho a infraestrutura de forma voluntária.',
       stats: [
         { value: '~10 000', label: 'pessoas na organização' },
-        { value: '2 + 1', label: 'sites institucionais e um CMS headless' },
-        { value: '39', label: 'testes de ponta a ponta na app' },
+        { value: '5', label: 'apps institucionais e um CMS open source de governança interna' },
+        { value: '5', label: 'contentores em Docker, a base desta estrutura em servidores próprios' },
       ],
       sections: [
-        {
-          title: 'Sites e CMS',
-          items: [
-            'Dois sites institucionais e um CMS headless em Directus, a correr em Docker.',
-            'Defini os modelos de conteúdo, os papéis de utilizador e as regras de governação.',
-            'Extensões do Directus para recibos em PDF em lote, validação de listas e o fluxo mensal de recibos.',
-          ],
-        },
         {
           title: 'App de militância · beta em outubro de 2026',
           items: [
@@ -429,23 +415,19 @@ export const PLATES: Plate[] = [
             'Pensada primeiro para o telemóvel, a correr no browser.',
             'Uma regra de segurança no centro do desenho: a app nunca escreve na plataforma interna e nada de fora entra na rede interna. Um serviço interno vai buscar o trabalho a uma fila e devolve os resultados.',
             'Fila com estados, contagem de tentativas e reentrega depois de timeout.',
-            '39 testes de ponta a ponta, da interface à plataforma simulada, incluindo as regras de permissões.',
+            'Testes de ponta a ponta, da interface à plataforma simulada, incluindo as regras de permissões.',
           ],
         },
-        {
-          title: 'Outros projetos',
-          items: ['Site de uma candidatura presidencial em 2026, com recolha de assinaturas e de voluntários.'],
-        },
       ],
-      tools: ['Directus', 'Docker', 'Caddy', 'TypeScript', 'React', 'Bun', 'Hono', 'zod', 'Tailwind', 'Next.js', 'SQLite', 'Gestão de stakeholders'],
+      tools: ['Directus', 'Docker', 'TypeScript', 'React', 'Bun', 'zod', 'Tailwind', 'Next.js', 'SQLite', 'Gestão de stakeholders'],
     },
     cg: {
       intro: 'Aqui sou gestor de produto e programador ao mesmo tempo. Dois sites, um CMS em Docker e uma app em beta.',
       more: 'A decisão de arquitetura de que mais gosto: o serviço interno só faz ligações para fora. Se a app pública cair ou for atacada, a rede interna continua fechada.',
       qa: [
         {
-          q: 'Porquê um CMS headless?',
-          a: 'Separa os conteúdos da apresentação. A equipa edita num só sítio e os sites, a app ou uma newsletter vão buscar o mesmo conteúdo por API.',
+          q: 'Porquê um CMS headless e open source?',
+          a: 'Separa os conteúdos da apresentação. A equipa edita num só sítio e os sites, a app ou uma newsletter vão buscar o mesmo conteúdo por API. Tudo numa lógica de código aberto e mantido pela comunidade.',
         },
         {
           q: 'Como geres e programas ao mesmo tempo?',
@@ -460,59 +442,64 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'comunicador',
-    era: 'Era comunicador',
+    era: 'comunicador',
     year: 2025,
-    when: 'Instagram, televisão e rádio',
-    title: '19 mil pessoas do outro lado',
+    when: 'Instagram e TikTok',
+    title: '36 mil pessoas seguem parte do que sou',
     note: 'Comunicador · @goncalopmfilipe',
     tint: '#2b2a33',
     dark: true,
     src: imgComunicador,
+    fx: 'rec',
     lente: 'camara',
     page: {
       kicker: 'Comunicador · @goncalopmfilipe',
-      heading: 'Comentário político em voz própria, direto para a câmara.',
-      lead: 'Na minha conta de Instagram explico leis, custo de vida, habitação e salários em Reels curtos, com as fontes na legenda. Falo para quem sente a vida a apertar e quer perceber quem decide e quem ganha com isso.',
+      heading: 'Comentário político em voz própria, opiniões sobre o nosso tempo.',
+      lead: 'Nas minhas contas de Instagram e TikTok explico leis, custo de vida, habitação, salários e questões culturais em Reels curtos, com fontes e de forma apelativa. Falo para quem sente a vida a apertar e quer perceber quem decide e quem ganha com isso.',
       stats: [
-        { value: '19 mil', label: 'seguidores' },
-        { value: '5,8 M', label: 'visualizações nos últimos 12 meses' },
-        { value: '224 mil', label: 'contas alcançadas pelo Reel mais visto' },
-        { value: '150', label: 'Reels publicados' },
+        { value: '24,5 mil', label: 'seguidores no Instagram' },
+        { value: '12 mil', label: 'seguidores no TikTok' },
+        { value: '4,3 M', label: 'visualizações nos últimos 3 meses (Instagram)' },
+        { value: '901 mil', label: 'contas alcançadas nos últimos 3 meses (Instagram)' },
+        { value: '157', label: 'Reels publicados' },
       ],
-      statsNote: 'Dados da API do Instagram a 30 de outubro de 2026.',
+      statsNote: 'Dados da API do Instagram a 11 de novembro de 2026.',
       sections: [
         {
           title: 'Como trabalho',
           items: [
             'Um tema por vídeo, 30 a 45 segundos, e o gancho logo na primeira frase.',
             'Leio a lei ou a medida ao pormenor e digo quem ganha e quem perde.',
-            'Nenhum número sem fonte: as fontes vão na legenda.',
+            'Nenhum número sem fonte: as fontes vão na legenda ou no ecrã.',
             'Guião, gravação e edição feitos por mim.',
           ],
         },
         {
-          title: 'Onde mais',
-          items: ['Comentário em painéis de televisão.', 'A proposta de um programa de rádio quinzenal, o Raízes, com a Diáspora.'],
+          title: 'De onde vem mais conteúdo',
+          items: ['Comentário em painéis de televisão.', 'Transmissão de informação de ativismo na rua.'],
         },
       ],
       gallery: [
         { src: imgReel1, alt: 'Gonçalo a falar para a câmara num Reel, com microfone de lapela na mão' },
         { src: imgReel4, alt: 'Gonçalo num Reel gravado em casa, com plantas ao fundo' },
       ],
-      tools: ['Guião', 'Apresentação', 'CapCut', 'Remotion', 'Instagram'],
-      links: [{ label: 'Instagram @goncalopmfilipe', href: 'https://www.instagram.com/goncalopmfilipe/' }],
+      tools: ['Guião', 'Apresentação', 'CapCut', 'Remotion', 'Instagram', 'TikTok'],
+      links: [
+        { label: 'Instagram @goncalopmfilipe', href: 'https://www.instagram.com/goncalopmfilipe/' },
+        { label: 'TikTok @goncalopmfilipe', href: 'https://www.tiktok.com/@goncalopmfilipe' },
+      ],
     },
     cg: {
-      intro: 'Este sou eu em modo câmara: 19 mil seguidores e quase 6 milhões de visualizações num ano, a explicar política sem jargão.',
-      more: 'Os Reels que chegam mais longe falam de bolso e de poder. Um apoio com limite de património de 16 mil euros, a elite económica nos corredores do poder.',
+      intro: '36 mil seguidores somados e mais de 8 milhões de visualizações desde que comecei a fazer comunicação política no Instagram.',
+      more: 'Os Reels que chegam mais longe falam de bolso e de poder. O meu público parece gostar de opiniões fundamentadas com dados e de retratos reais da minha atividade política.',
       qa: [
         {
           q: 'Como escolhes os temas?',
-          a: 'Pela vida material de quem tem entre 18 e 30 anos: renda, salário, precariedade, transportes. Se uma medida mexe nisso, merece um vídeo.',
+          a: 'Pela vida material de quem tem entre 18 e 40 anos: renda, salário, precariedade, transportes. Se uma medida mexe nisso, merece um vídeo.',
         },
         {
           q: 'Porquê sempre fontes?',
-          a: 'Porque uma posição forte não dispensa rigor. E dá credibilidade: quem discorda pode ir verificar.',
+          a: 'Porque uma posição forte não dispensa rigor. E em tempos em que a mentira viaja rápido, dizer a verdade de forma apelativa é uma marca que pretendo manter.',
         },
         {
           q: 'Fazes tudo sozinho?',
@@ -522,100 +509,49 @@ export const PLATES: Plate[] = [
     },
   },
   {
-    slug: 'assessoria',
-    era: 'Era assessor de comunicação',
-    year: 2025,
-    when: '2025 até hoje',
-    title: 'A voz de um gabinete',
-    note: 'Assessor de comunicação',
-    tint: '#d8c7ad',
-    art: 'reel',
-    lente: 'camara',
-    page: {
-      kicker: 'Desde 2025 · Assessoria de comunicação',
-      heading: 'Transformar trabalho político em vídeos que as pessoas veem até ao fim.',
-      lead: 'No gabinete giro as redes sociais e edito os vídeos. Uma intervenção em plenário ou em comissão passa a Reel com título, legendas e uma frase de abertura que segura nos primeiros segundos.',
-      sections: [
-        {
-          title: 'O que faço',
-          items: [
-            'Gestão das redes sociais do gabinete.',
-            'Edição de intervenções e de vídeos à câmara em formato vertical, com legendas e títulos.',
-            'Escolha do ângulo: a frase que faz alguém parar o scroll.',
-          ],
-        },
-        {
-          title: 'Com dados',
-          items: [
-            'Fiz um painel próprio, o Fora da Bolha, que junta várias contas: alcance, retenção, seguidores e moderação de comentários.',
-            'Mostra que vídeos chegam a quem não segue a conta, e quais ficam dentro da bolha.',
-          ],
-        },
-      ],
-      gallery: [{ src: imgForaDaBolha, alt: 'Ecrã do painel Fora da Bolha, com alcance, contas que interagiram e uma galeria de Reels ordenada por alcance', wide: true }],
-      tools: ['Gestão de redes sociais', 'CapCut', 'Remotion', 'API do Instagram', 'Python'],
-    },
-    cg: {
-      intro: 'Do outro lado da câmara: sou eu quem edita os vídeos e gere as redes do gabinete.',
-      more: 'Para não decidir às cegas, fiz um painel com os dados das contas: alcance, retenção e os vídeos que furam a bolha.',
-      qa: [
-        {
-          q: 'O que é furar a bolha?',
-          a: 'Chegar a quem ainda não te segue. No painel comparo, vídeo a vídeo, o alcance entre seguidores e não seguidores.',
-        },
-        {
-          q: 'Como transformas uma intervenção em Reel?',
-          a: 'Encontro a frase mais forte e ponho-a no início. Depois corto o que sobra, junto legendas e um título que diga o tema em poucas palavras.',
-        },
-        {
-          q: 'Que ferramentas usas?',
-          a: 'CapCut para a edição rápida, Remotion quando quero gráficos e legendas programados, e scripts em Python para ir buscar os dados à API do Instagram.',
-        },
-      ],
-    },
-  },
-  {
     slug: 'video',
-    era: 'Era editor de vídeo',
+    era: 'editor de vídeo',
     year: 2025,
-    when: '2025 até hoje',
-    title: 'Edição com código',
+    when: 'Desde 2022',
+    title: 'Edição de vídeo',
     note: 'Editor de vídeo · CapCut e Remotion',
-    tint: '#3a2f2a',
+    tint: '#a08cf9',
     dark: true,
-    src: imgVideo,
+    src: imgVideoEditor,
+    fx: 'float',
     lente: 'camara',
     page: {
       kicker: 'Editor de vídeo · CapCut e Remotion',
       heading: 'Edito vídeo à mão e com código.',
       lead: 'Uso o CapCut para o ritmo e o Remotion, que é React, para tudo o que dá para programar: legendas, cartões com dados, inserções de notícias e animações sincronizadas com a fala.',
-      stats: [{ value: '97', label: 'projetos de vídeo no CapCut' }],
+      stats: [{ value: '+150', label: 'projetos de vídeo no CapCut' }],
       sections: [
         {
-          title: 'Peças',
+          title: 'Formatos',
           items: [
-            '«Décadas», um ensaio sobre habitação, com rótulos em papel por cima da cabeça e cartões na camisola.',
-            '«Cantona»: imagens projetadas na folha de um caderno em cena. Segui os cantos da folha com OpenCV e projetei as animações em perspetiva.',
-            '«Tendas», em estilo jornalístico escuro, com legendas e notas de fontes.',
-            'Um teaser de 15 segundos para uma festa da Bojarda, com cortes rápidos.',
+            'Yapper: pego no telemóvel e dou uma opinião. Algo que me está na cabeça e pode gerar reflexões saudáveis.',
+            'Vídeo caseiro com teleponto. É verdade. As pessoas pesquisam e escrevem conteúdo se o tema precisar desse cuidado. Ou pelo menos, eu faço-o.',
+            'Vox pop: passar o microfone pode ser útil para o debate. E atrativo para as redes.',
+            'Vídeos de apresentação sincronizados com música para a Bojarda.',
           ],
         },
         {
-          title: 'Automatizar o que se repete',
+          title: 'Onde o Remotion (com o Claude) é útil',
           items: [
-            'Legendas a partir de transcrição automática com Whisper, a correr no meu computador.',
-            'Num podcast, separei automaticamente as vozes de cada orador e gerei os cortes a partir daí.',
+            'Legendas a partir de transcrição automática com Whisper.',
+            'Num podcast, separei automaticamente as vozes de cada orador e gerei os cortes a partir daí. Editei em 10 minutos o que demoraria horas.',
           ],
         },
       ],
       gallery: [
+        { src: imgVideo, alt: 'Fotograma de um Reel editado, com legenda e uma notícia inserida em cima' },
         { src: imgReel2, alt: 'Fotograma de um Reel com a legenda «o que está»' },
         { src: imgReel3, alt: 'Fotograma de um Reel com um círculo vermelho animado' },
       ],
-      tools: ['CapCut', 'Remotion', 'React', 'TypeScript', 'whisper.cpp', 'OpenCV', 'Python', 'ffmpeg'],
+      tools: ['CapCut', 'Remotion', 'React', 'whisper.cpp', 'ffmpeg'],
     },
     cg: {
-      intro: 'Edição de vídeo. Às vezes no CapCut, às vezes em React, com o Remotion.',
+      intro: 'Também estou nas redes como criador de conteúdo e edito os meus vídeos. Às vezes no CapCut, às vezes em React, com o Remotion.',
       more: 'No vídeo «Cantona» projetei animações numa folha de caderno que se mexe na mão. Os cantos da folha foram seguidos fotograma a fotograma com OpenCV.',
       qa: [
         {
@@ -624,39 +560,38 @@ export const PLATES: Plate[] = [
         },
         {
           q: 'Porquê programar vídeo?',
-          a: 'Há trabalho que se repete em todos os vídeos: legendas, cartões, fontes no ecrã. Programado uma vez, fica feito para os próximos.',
+          a: 'Há trabalho que se repete em todos os vídeos: legendas, cartões, fontes no ecrã. Programado uma vez, fica feito para os próximos, e poupa-me tempo para outras coisas.',
         },
         {
           q: 'Para quem editas?',
-          a: 'Para a minha conta, para o gabinete no Parlamento Europeu, para a Diáspora e para a Bojarda.',
+          a: 'Para a minha conta. Mas editei para o gabinete no Parlamento Europeu durante um ano, e também para a Diáspora e para a Bojarda.',
         },
       ],
     },
   },
   {
     slug: 'ia',
-    era: 'Era programador',
+    era: 'programar com IA',
     year: 2026,
     when: '2025 até hoje',
-    title: 'Agentes que trabalham comigo',
-    note: 'Engenharia com IA · Claude Code',
+    title: 'Ser um consultor autónomo no século XXI',
+    note: 'Engenharia com IA · Claude Code · LLMs abertos',
     tint: '#141915',
     dark: true,
     art: 'terminal',
     lente: 'codigo',
     page: {
       kicker: 'Desde 2025 · Desenvolvimento full-stack assistido por IA',
-      heading: 'Software feito com agentes de IA, comigo ao volante.',
-      lead: 'Construo aplicações completas com o Claude Code. Eu decido a arquitetura, escrevo as regras e reviso; os agentes escrevem grande parte do código. Este site foi feito assim.',
+      heading: 'Os desafios técnicos são ultrapassados mais rapidamente. Fica o espaço para a criatividade.',
+      lead: 'Construo aplicações completas com o Claude Code. Eu decido a arquitetura, escrevo as regras e revejo. Este site foi feito assim.',
       stats: [
         { value: '14', label: 'projetos com o Claude Code desde maio de 2026' },
         { value: '1 700', label: 'ações registadas dos agentes, de maio a outubro' },
       ],
       sections: [
         {
-          title: 'Projetos',
+          title: 'Alguns projetos',
           items: [
-            'Sede Virtual: um mundo em pixel art onde vivem os agentes de IA de uma organização. Andas pelo mapa, chegas perto de um agente e falas com ele. Cada agente tem ferramentas, memória e acesso a uma biblioteca de documentos. A voz corre localmente.',
             'Portal Docker: gestão de um servidor interno, com diagnóstico por scripts e um assistente de IA que só propõe alterações. Nada corre sem confirmação escrita e os dados pessoais saem antes de qualquer envio a um fornecedor de IA.',
             'Central Claude: um painel local para ver e mudar toda a configuração do Claude Code e do Claude Desktop.',
             'Fora da Bolha: análise de contas de Instagram com classificação de comentários e diagnósticos por IA.',
@@ -675,12 +610,12 @@ export const PLATES: Plate[] = [
       tools: ['Claude Code', 'API da Anthropic', 'TypeScript', 'Bun', 'Node.js', 'Phaser', 'Playwright', 'Docker', 'Python'],
     },
     cg: {
-      intro: 'Construo software com agentes de IA: eu decido, eles escrevem, eu reviso.',
-      more: 'Os agentes da Sede Virtual são primos afastados meus, só que com um modelo por trás. As minhas respostas foram escritas à mão pelo Gonçalo.',
+      intro: 'Construo software com assistentes de IA: eu decido, eles escrevem, eu revejo e direciono.',
+      more: 'Há vários projetos que desenvolvo pro bono e outros que desenvolvo antes de receber qualquer remuneração por eles.',
       qa: [
         {
           q: 'Isso não é batota?',
-          a: 'É ferramenta. As decisões difíceis continuam a ser minhas: onde passa a fronteira de segurança, o que fica em fila, o que se testa. O agente acelera a escrita; a responsabilidade é minha.',
+          a: 'É ferramenta. As decisões difíceis continuam a ser minhas: onde passa a fronteira de segurança, o que fica em fila, o que se testa. O assistente acelera a escrita; a responsabilidade é minha.',
         },
         {
           q: 'Tu és uma IA?',
@@ -688,17 +623,17 @@ export const PLATES: Plate[] = [
         },
         {
           q: 'Que modelos usas?',
-          a: 'Sobretudo Claude, pelo Claude Code e pela API. Na Sede Virtual e no Portal Docker o fornecedor é intercambiável: pode ser outro serviço compatível ou um modelo local.',
+          a: 'Sobretudo Claude, pelo Claude Code e pela API.',
         },
       ],
     },
   },
   {
     slug: 'estrategia',
-    era: 'Era organizador',
+    era: 'organizador',
     year: 2026,
-    when: '2025 até hoje',
-    title: 'Da rua à estrutura',
+    when: '2022 até hoje',
+    title: 'Organizar a rua',
     note: 'Estratégia organizativa',
     tint: '#c9cbc3',
     src: imgEstrategia,
@@ -706,37 +641,40 @@ export const PLATES: Plate[] = [
     lente: 'causa',
     page: {
       kicker: 'Estratégia organizativa',
-      heading: 'Mais gente a participar e menos papel pelo caminho.',
-      lead: 'Penso uma organização como penso um produto: quem chega, como entra, o que pode fazer sozinho e o que precisa de aprovação. Trabalhei nisso numa proposta de estrutura digital para uma organização política e na direção da Diáspora. E vou para a rua quando é preciso.',
+      heading: 'Análise política acertada e capacidade de construir ferramentas úteis.',
+      lead: 'Penso uma organização com a mesma procura pela big picture com que penso um produto: qual é o objetivo, quais são as minhas ferramentas, como organizar o coletivo em torno de um objetivo. Já construí toda a estrutura digital para uma organização política. Estou presente na construção de soluções coletivas em lutas por justiça social.',
       sections: [
         {
           title: 'Estrutura digital',
           items: [
-            'Contribuí para uma proposta de estrutura digital para uma organização política: diagnóstico, visão em três camadas e um plano por fases.',
-            'As três camadas: gestão interna para dirigentes, autogestão para militantes e mobilização para simpatizantes.',
+            'Desenvolvi toda a estrutura digital para uma organização política: diagnóstico, arquitetura, desenvolvimento por fases e gestão de programadores voluntários.',
+            'Composição: gestão de governança interna para dirigentes, autogestão para membros e mobilização para simpatizantes.',
             'Princípios: abertura a quem não é filiado, descentralização, integração entre ferramentas, automatização da burocracia e segurança por papel.',
-            'Estudei exemplos europeus: Action Populaire, Zetkin, Participa.',
-            'A fase seguinte passou do papel ao código, na app de militância.',
+            'Estudei exemplos europeus: Action Populaire, Zetkin e Participa.',
+            'Existe uma separação técnica e assíncrona entre as aplicações de governança interna e as aplicações abertas ao público.',
           ],
         },
         {
           title: 'Na rua',
-          items: ['Acampadas e manifestações pela habitação.', 'Comentário sobre elas na televisão e no Instagram.'],
+          items: [
+            'Manifestações pela habitação e organização popular para o empoderamento político de comunidades.',
+            'Comunicação e participação na disputa da narrativa política nacional.',
+          ],
         },
       ],
-      tools: ['Diagnóstico organizacional', 'Desenho de processos', 'Papéis e permissões', 'Benchmarking', 'Mobilização'],
+      tools: ['Diagnóstico organizacional', 'Desenho de processos', 'Papéis e permissões', 'Análise política', 'Mobilização'],
     },
     cg: {
-      intro: 'A causa. Penso organizações como penso produtos: onde é que as pessoas desistem e como se abre a porta.',
-      more: 'Numa organização política, cada passo burocrático a mais é alguém que não volta. A proposta em que trabalhei começa precisamente por aí.',
+      intro: 'A causa. O ativismo também desafia competências organizativas: onde é que as pessoas desistem, como se abrem portas, a arte de convencer.',
+      more: 'Numa organização política, cada passo burocrático a mais é alguém que não volta. Uma organização que sabe acolher com boas ferramentas é uma boa notícia para a democracia.',
       qa: [
         {
-          q: 'O que são as três camadas?',
-          a: 'Ferramentas de gestão interna para dirigentes e organizadores; ferramentas de autogestão para todos os militantes; e ferramentas de mobilização abertas a simpatizantes e a quem ainda pode vir a sê-lo.',
+          q: 'Que aplicações desenvolveste?',
+          a: 'Ferramentas de gestão interna para dirigentes e organizadores; ferramentas de autogestão para todos os membros; e ferramentas de mobilização abertas a simpatizantes e a quem ainda pode vir a sê-lo.',
         },
         {
-          q: 'Porquê tecnologia na militância?',
-          a: 'Porque a participação baixa tem causas concretas: adesões longas e em papel, canais espalhados, pouca autonomia local. A tecnologia tira obstáculos do caminho. A política continua a ser feita por pessoas.',
+          q: 'Porquê tecnologia na política e no ativismo?',
+          a: 'Porque a participação baixa tem causas concretas: adesões longas e em papel, canais espalhados com pouca capacidade de gestão e pouca autonomia local. A tecnologia tira obstáculos do caminho para que as pessoas possam fazer política e exercer participação democrática.',
         },
         {
           q: 'Também vais à rua?',
@@ -747,43 +685,39 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'bojarda',
-    era: 'Era DJ',
+    era: 'DJ',
     year: 2026,
-    when: 'Fora do ecrã',
+    when: '2026',
     title: 'Bojarda',
-    note: 'Fora do ecrã · DJ',
+    note: 'Música e performance · DJ',
     tint: '#140b0b',
     dark: true,
     src: imgBojarda,
     focus: '50% 18%',
     lente: 'vida',
     page: {
-      kicker: 'Fora do ecrã',
-      heading: 'Fora do ecrã há música, andebol e livros.',
-      lead: 'Com a Bojarda passo música e faço festas. Sou andebolista federado e leio muito.',
+      kicker: 'Há que partir tudo às vezes.',
+      heading: 'Música, desporto e festivais.',
+      lead: 'A vida não pode ser só trabalho, né?',
       sections: [
         {
           title: 'Bojarda',
           items: ['Projeto de DJ com festas próprias.', 'Os teasers em vídeo também são meus, feitos em Remotion.'],
         },
-        {
-          title: 'O resto',
-          items: ['Andebol federado: trabalho de equipa, disciplina e resiliência.', 'Leitura e música, sempre.', 'Tecnologia ao serviço do progresso social.'],
-        },
       ],
       gallery: [{ src: imgBojarda2, alt: 'Cabine de DJ da Bojarda iluminada a vermelho, com o letreiro BOJARDA ao fundo' }],
     },
     cg: {
-      intro: 'Fora do ecrã: a Bojarda. Passo música e faço festas.',
-      more: 'Também jogo andebol federado. Trabalho de equipa aprende-se melhor num pavilhão do que numa retrospetiva de sprint.',
+      intro: 'BOJARDA. Passo música e faço festas.',
+      more: 'Também joguei andebol e futebol federado. Trabalho de equipa aprende-se melhor num campo do que numa retrospetiva de sprint.',
       qa: [
         {
           q: 'Quem fez o teaser?',
           a: 'Eu, em Remotion: 15 segundos de cortes rápidos, quase tudo com os DJs e um pouco de público e luzes.',
         },
         {
-          q: 'E o andebol?',
-          a: 'Sou andebolista federado. É de lá que vem muito do que sei sobre trabalho de equipa.',
+          q: 'E o desporto?',
+          a: 'Joguei andebol e futebol. É de lá que vem muito do que sei sobre trabalho de equipa e sobre lidar com a pressão.',
         },
       ],
     },

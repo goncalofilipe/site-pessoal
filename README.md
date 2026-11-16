@@ -34,3 +34,15 @@ node scripts/preparar-imagens.mjs <pasta-com-os-originais>
 ```
 
 O script lista os ficheiros de origem que espera (`barulhobom.jpg`, `cover96.jpg`, `protest.jpg`, `boj2616.jpg`, `portrait.jpg`, …) e os recortes de cada um. Também gera o avatar (`ciber-goncalo.png`) a partir do retrato.
+
+Imagens da segunda leva (Noesis, OutSystems, logótipo da Diáspora, Parlamento, puzzle, comunicador, editor de vídeo):
+
+```bash
+node scripts/preparar-imagens-v2.mjs <pasta-com-os-originais>
+```
+
+## Línguas, cores e animações
+
+- Português em `src/content.ts`, inglês em `src/content.en.ts` (mesma estrutura, só os textos). Textos da interface e falas gerais do avatar nos dois idiomas em `src/i18n.ts`. `?lang=en` no endereço abre em inglês.
+- Esquemas de cor em `src/theme.ts` (lista) e no fim de `src/styles/florilegium.css` (as cores de cada um).
+- Animações das imagens: campo `fx` de cada placa em `content.ts`, camadas em `src/PlateFx.tsx`, estilos em `src/styles/fx.css`.

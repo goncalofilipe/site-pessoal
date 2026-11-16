@@ -4,8 +4,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { N, PERSON, PLATES } from './content'
 import PlateArt from './PlateArt'
+import PlateFx from './PlateFx'
 import { clamp, lerp, smooth, usePrefersReducedMotion } from './lib/motion'
 import { hero } from './lib/hero'
+import { useLang, usePlates, useT } from './i18n'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -36,6 +38,9 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
   const cb = useRef({ onActive, onFinale })
   cb.current = { onActive, onFinale }
   const reduced = usePrefersReducedMotion()
+  const lang = useLang()
+  const L = usePlates()
+  const T = useT()
 
   const [active, setActive] = useState(0)
   const [loaded, setLoaded] = useState<boolean[]>(() => PLATES.map((p) => !p.src))
@@ -228,7 +233,14 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
     else window.scrollTo({ top: y, behavior: immediate || reduced ? 'auto' : 'smooth' })
   }
   const progressOf = (i: number) => (clamp(i, 0, N - 1) / (N - 1)) * STRIP_END
-  const goTo = (i: number) => scrollToProgress(progressOf(i))
+  // último destino pedido: teclas seguidas somam-se em vez de partirem sempre da placa atual
+  const target = useRef({ i: 0, at: 0 })
+  const goTo = (i: number) => {
+    const c = clamp(i, 0, N - 1)
+    target.current = { i: c, at: performance.now() }
+    scrollToProgress(progressOf(c))
+  }
+  const stepFrom = () => (performance.now() - target.current.at < 1400 ? target.current.i : active)
 
   useEffect(() => {
     hero.goTo = goTo
@@ -246,19 +258,20 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
     hero.focusCard = (i) => cardsRef.current[i]?.focus({ preventScroll: true })
   })
 
-  // setas avançam entre placas enquanto o herói está no ecrã
+  // setas para cima e para baixo avançam entre placas enquanto o herói está no ecrã
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const st = stRef.current
-      if (paused || !st || !st.isActive) return
+      // no topo (scroll 0) o ScrollTrigger ainda não está «ativo»: conta com os limites inclusivos
+      if (paused || !st || window.scrollY < st.start - 1 || window.scrollY > st.end + 1) return
       if ((e.target as HTMLElement).closest('input, textarea')) return
-      if (e.key === 'ArrowRight') {
+      if (e.key === 'ArrowDown') {
         e.preventDefault()
-        goTo(active + 1)
+        goTo(stepFrom() + 1)
       }
-      if (e.key === 'ArrowLeft') {
+      if (e.key === 'ArrowUp') {
         e.preventDefault()
-        goTo(active - 1)
+        goTo(stepFrom() - 1)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -266,26 +279,25 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, paused])
 
-  const plate = PLATES[active]
-  const last = PLATES[N - 1]
+  const plate = L[active]
+  const last = L[N - 1]
 
   return (
     <main className="fl-root" data-ready={ready} aria-hidden={paused || undefined} inert={paused || undefined}>
-      <section ref={trackRef} className="fl-track" style={{ height: `${N * 42 + 170}vh` }} aria-label="Gonçalo Filipe, percurso de 2012 até hoje">
+      <section ref={trackRef} className="fl-track" style={{ height: `${N * 42 + 170}vh` }} aria-label={T.sectionAria}>
         <div ref={stageRef} className="fl-stage">
           <div ref={chromeRef} className="fl-chrome">
             <header className="fl-top">
               <span className="fl-top__l">
-                (Portefólio) <em>Lisboa, 2026</em>
+                {T.topLeft} <em>{T.topDate}</em>
               </span>
               <span className="fl-logo">{PERSON.name}</span>
-              <span className="fl-top__r">Código · Câmara · Causa</span>
+              <span className="fl-top__r">{T.topRight}</span>
             </header>
 
             <p ref={eraRef} className="fl-era" aria-hidden="true">
-              <span className="fl-era__e">Era</span>{' '}
-              <span key={active} className="fl-era__t">
-                {plate.era.replace(/^Era /, '')}
+              <span key={`${active}-${lang}`} className="fl-era__t">
+                {plate.era}
               </span>
             </p>
 
@@ -294,7 +306,7 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
               <span className="fl-caption__no">
                 {String(active + 1).padStart(2, '0')} / {N}
               </span>
-              <span key={active} className="fl-caption__title">
+              <span key={`${active}-${lang}`} className="fl-caption__title">
                 {plate.title}
               </span>
               <span className="fl-caption__note">{plate.note}</span>
@@ -310,13 +322,13 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
               <span className="fl-time__end">{YEARS[N - 1]}</span>
             </div>
             <p ref={introRef} className="fl-intro">
-              <span>Olá, sou o Gonçalo.</span> Programo, faço gestão de produto, comunico, edito vídeo e dou assessoria em política, comunicação e organização. De 2012 até hoje.
+              <span>{T.introLead}</span> {T.introBody}
             </p>
-            <p className="fl-sub">Faz scroll · ← → para avançar · clica para abrir</p>
+            <p className="fl-sub">{T.hint}</p>
           </div>
 
           <div className="fl-strip">
-            {PLATES.map((p, i) => (
+            {L.map((p, i) => (
               <button
                 key={p.slug}
                 type="button"
@@ -325,7 +337,7 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
                 }}
                 className={`fl-card${i === active ? ' is-active' : ''}${p.dark ? ' is-dark' : ''}`}
                 style={{ background: p.tint }}
-                aria-label={`${i + 1} de ${N}: ${p.era}. ${p.title}, ${p.note}. Abrir página.`}
+                aria-label={T.cardAria(i + 1, N, p.era, p.title, p.note)}
                 aria-current={i === active ? 'true' : undefined}
                 onClick={() => onOpen(i)}
               >
@@ -339,6 +351,7 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
                     {p.art ? (
                       <PlateArt art={p.art} />
                     ) : !failed[i] ? (
+                      <>
                       <img
                         src={p.src}
                         alt=""
@@ -346,10 +359,12 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
                         loading="eager"
                         draggable={false}
                         style={p.focus ? { objectPosition: p.focus } : undefined}
-                        className={loaded[i] ? 'is-loaded' : ''}
+                        className={`${p.fx ? `fx-${p.fx}` : ''}${loaded[i] ? ' is-loaded' : ''}`}
                         onLoad={() => setLoaded((l) => l.map((v, j) => (j === i ? true : v)))}
                         onError={() => setFailed((l) => l.map((v, j) => (j === i ? true : v)))}
                       />
+                      <PlateFx fx={p.fx} />
+                      </>
                     ) : (
                       <span className="fl-card__fallback">
                         {String(i + 1).padStart(2, '0')}
@@ -358,8 +373,9 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
                       </span>
                     )}
                   </span>
+                  {!p.art && !failed[i] && <PlateFx fx={p.fx} layer="card" />}
                   <span className="fl-card__open" aria-hidden="true">
-                    Abrir ↗
+                    {T.open}
                   </span>
                 </span>
               </button>
@@ -367,18 +383,18 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
           </div>
 
           <div ref={finalRef} className="fl-final">
-            <p className="fl-final__kicker">{N} / {N} · {last.title} · {last.when}</p>
-            <h1 className="fl-final__title">
-              Código, câmara
-              <br />
-              <em>e causa.</em>
-            </h1>
-            <p className="fl-final__body">
-              Programo, faço gestão de produto, comunico, edito vídeo e dou assessoria em política, comunicação e organização. Procuro projetos que precisem de mais do que uma destas coisas ao mesmo tempo.
+            <p className="fl-final__kicker">
+              {N} / {N} · {last.title} · {last.when}
             </p>
+            <h1 className="fl-final__title">
+              {T.finalTitle1}
+              <br />
+              <em>{T.finalTitle2}</em>
+            </h1>
+            <p className="fl-final__body">{T.finalBody}</p>
             <div className="fl-final__actions">
               <a className="fl-final__btn is-solid" href={`mailto:${PERSON.email}`}>
-                Escrever-me <span aria-hidden="true">→</span>
+                {T.btnEmail} <span aria-hidden="true">→</span>
               </a>
               <a className="fl-final__btn" href={PERSON.linkedin} target="_blank" rel="noreferrer">
                 LinkedIn
@@ -386,21 +402,24 @@ export default function Hero({ paused, onOpen, onActive, onFinale, onReady }: Pr
               <a className="fl-final__btn" href={PERSON.instagram} target="_blank" rel="noreferrer">
                 Instagram
               </a>
-              <a className="fl-final__btn" href={PERSON.cvPt} download>
-                CV (PDF)
+              <a className="fl-final__btn" href={PERSON.tiktok} target="_blank" rel="noreferrer">
+                TikTok
+              </a>
+              <a className="fl-final__btn" href={PERSON.cv[lang]} download>
+                {T.btnCv}
               </a>
               <button type="button" className="fl-final__btn" onClick={() => onOpen(N - 1)}>
-                Ver a Bojarda
+                {T.btnBojarda}
               </button>
               <button type="button" className="fl-final__btn" onClick={() => scrollToProgress(0)}>
-                Voltar ao início <span aria-hidden="true">↑</span>
+                {T.btnTop} <span aria-hidden="true">↑</span>
               </button>
             </div>
           </div>
 
           {!ready && (
             <div className="fl-loader" role="status">
-              A carregar {String(loadedCount).padStart(2, '0')} / {N}
+              {T.loading} {String(loadedCount).padStart(2, '0')} / {N}
             </div>
           )}
         </div>

@@ -1,13 +1,17 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { N, PERSON, PLATES } from './content'
+import { N, PERSON } from './content'
+import { usePlates, useT } from './i18n'
 import PlateArt from './PlateArt'
+import PlateFx from './PlateFx'
 import { prefersReducedMotion } from './lib/motion'
 import { closePlate, replacePlate } from './lib/route'
 
 type Props = { index: number; from: DOMRect | null }
 
 export default function PlatePage({ index, from }: Props) {
+  const PLATES = usePlates()
+  const T = useT()
   const p = PLATES[index]
   const rootRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -59,7 +63,15 @@ export default function PlatePage({ index, from }: Props) {
       <div ref={scrollRef} className="pg-scroll" data-lenis-prevent>
         <div className="pg-media">
           <div className="pg-media__inner">
-            {p.art ? <PlateArt art={p.art} /> : <img src={p.src} alt="" style={p.focus ? { objectPosition: p.focus } : undefined} />}
+            {p.art ? (
+              <PlateArt art={p.art} />
+            ) : (
+              <>
+                <img src={p.src} alt="" className={p.fx ? `fx-${p.fx}` : undefined} style={p.focus ? { objectPosition: p.focus } : undefined} />
+                <PlateFx fx={p.fx} />
+                <PlateFx fx={p.fx} layer="card" />
+              </>
+            )}
           </div>
           <p className="pg-media__cap">
             {String(index + 1).padStart(2, '0')} / {N} · {p.when}
@@ -67,18 +79,18 @@ export default function PlatePage({ index, from }: Props) {
         </div>
 
         <article className="pg-body">
-          <nav className="pg-bar" aria-label="Navegação">
+          <nav className="pg-bar" aria-label={T.pageNav}>
             <button ref={closeRef} type="button" className="pg-btn" onClick={closePlate}>
-              <span aria-hidden="true">←</span> Início
+              <span aria-hidden="true">←</span> {T.pageHome}
             </button>
             <span className="pg-bar__no">
               {String(index + 1).padStart(2, '0')} / {N}
             </span>
             <span className="pg-bar__step">
-              <button type="button" className="pg-btn is-icon" disabled={!prev} onClick={() => prev && replacePlate(prev.slug)} aria-label={prev ? `Anterior: ${prev.title}` : 'Sem anterior'}>
+              <button type="button" className="pg-btn is-icon" disabled={!prev} onClick={() => prev && replacePlate(prev.slug)} aria-label={prev ? `${T.pagePrev}: ${prev.title}` : T.pageNoPrev}>
                 ←
               </button>
-              <button type="button" className="pg-btn is-icon" disabled={!next} onClick={() => next && replacePlate(next.slug)} aria-label={next ? `Seguinte: ${next.title}` : 'Sem seguinte'}>
+              <button type="button" className="pg-btn is-icon" disabled={!next} onClick={() => next && replacePlate(next.slug)} aria-label={next ? `${T.pageNext}: ${next.title}` : T.pageNoNext}>
                 →
               </button>
             </span>
@@ -95,7 +107,7 @@ export default function PlatePage({ index, from }: Props) {
           </header>
 
           {p.page.stats && (
-            <section className="pg-stats pg-reveal" aria-label="Números">
+            <section className="pg-stats pg-reveal" aria-label={T.pageFigures}>
               {p.page.stats.map((s) => (
                 <div key={s.label} className="pg-stat">
                   <span className="pg-stat__v">{s.value}</span>
@@ -118,7 +130,7 @@ export default function PlatePage({ index, from }: Props) {
           ))}
 
           {p.page.gallery && (
-            <section className="pg-gallery pg-reveal" aria-label="Imagens">
+            <section className="pg-gallery pg-reveal" aria-label={T.pageImages}>
               {p.page.gallery.map((g) => (
                 <figure key={g.src} className={g.wide ? 'is-wide' : ''}>
                   <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
@@ -129,7 +141,7 @@ export default function PlatePage({ index, from }: Props) {
 
           {p.page.tools && (
             <section className="pg-sec pg-reveal">
-              <h2 className="pg-sec__t">Ferramentas e temas</h2>
+              <h2 className="pg-sec__t">{T.pageTools}</h2>
               <p className="pg-tags">
                 {p.page.tools.map((t) => (
                   <span key={t}>{t}</span>
@@ -151,14 +163,14 @@ export default function PlatePage({ index, from }: Props) {
           <footer className="pg-foot">
             {next ? (
               <button type="button" className="pg-next" onClick={() => replacePlate(next.slug)}>
-                <span className="pg-next__k">Seguinte · {next.era}</span>
+                <span className="pg-next__k">{T.pageNext} · {next.era}</span>
                 <span className="pg-next__t">
                   {next.title} <span aria-hidden="true">→</span>
                 </span>
               </button>
             ) : (
               <a className="pg-next" href={`mailto:${PERSON.email}`}>
-                <span className="pg-next__k">Fim · fala comigo</span>
+                <span className="pg-next__k">{T.pageEnd}</span>
                 <span className="pg-next__t">
                   {PERSON.email} <span aria-hidden="true">→</span>
                 </span>

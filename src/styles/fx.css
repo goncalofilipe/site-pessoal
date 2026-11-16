@@ -1,0 +1,82 @@
+/* Animações das imagens das placas. A transformação do contentor (.fl-card__media) é escrita pelo
+   herói em cada frame; aqui anima-se só a imagem e as camadas por cima, por isso não se atropelam. */
+.fl-card__media, .fl-card__clip, .pg-media__inner { container-type: size; }
+
+.fx-kenburns { animation: fx-kb 18s ease-in-out infinite alternate; }
+@keyframes fx-kb { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.09) translate(-1.5%, -1%); } }
+
+.fx-stars { animation: fx-kb 26s ease-in-out infinite alternate; }
+/* a imagem do comunicador também respira devagar */
+img.fx-rec { animation: fx-kb 22s ease-in-out infinite alternate; }
+
+.fx-float { animation: fx-float 7s ease-in-out infinite; }
+@keyframes fx-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2.5%) scale(1.02); } }
+
+/* puzzle visto de cima: a mesa roda devagar para um lado e para o outro */
+.fx-spin { animation: fx-spin 16s ease-in-out infinite alternate; transform-origin: 50% 50%; }
+/* escala abaixo de 1 para compensar o zoom de paralaxe do cartão e não cortar as pessoas nas pontas */
+@keyframes fx-spin { from { transform: rotate(-9deg) scale(0.84); } to { transform: rotate(9deg) scale(0.84); } }
+
+/* logótipo da Diáspora: pulsa ao ritmo das ondas */
+.fx-rings { animation: fx-pulse 3.6s ease-in-out infinite; }
+@keyframes fx-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+
+.fx-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* ondas de rádio a sair do ícone da Diáspora */
+.fx-ring {
+  position: absolute;
+  left: 50%;
+  top: 41%;
+  width: 34%;
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.35);
+  opacity: 0;
+  animation: fx-ring 3.6s ease-out infinite;
+}
+@keyframes fx-ring {
+  0% { transform: translate(-50%, -50%) scale(0.35); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+}
+
+/* estrelas do Parlamento a cintilar */
+.fx-star {
+  position: absolute;
+  width: 12%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.6);
+  background: radial-gradient(circle, rgba(255, 246, 190, 0.95) 0 12%, rgba(255, 214, 80, 0.45) 30%, rgba(255, 214, 80, 0) 68%);
+  mix-blend-mode: screen;
+  animation: fx-twinkle 2.4s ease-in-out infinite;
+}
+@keyframes fx-twinkle {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.2; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
+/* indicador de gravação no comunicador */
+.fx-recbadge {
+  position: absolute;
+  left: 6%;
+  top: 4.5%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.45em 0.8em;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.55);
+  color: #fff;
+  font: 700 4.2cqw/1 var(--fl-mono);
+  letter-spacing: 0.14em;
+}
+.fx-recbadge i { width: 0.75em; height: 0.75em; border-radius: 50%; background: #ff3b30; animation: fx-blink 1.2s steps(2, jump-none) infinite; }
+@keyframes fx-blink { 50% { opacity: 0.15; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-kenburns, .fx-stars, img.fx-rec, .fx-float, .fx-spin, .fx-rings, .fx-ring, .fx-star, .fx-recbadge i { animation: none; }
+  .fx-ring { display: none; }
+  .fx-star { opacity: 0.7; transform: translate(-50%, -50%) scale(0.8); }
+}

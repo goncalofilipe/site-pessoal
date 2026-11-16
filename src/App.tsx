@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Hero from './Hero'
 import PlatePage from './PlatePage'
 import CiberGoncalo from './ciber/CiberGoncalo'
+import Prefs from './Prefs'
 import * as cg from './ciber/script'
 import { indexOf, PLATES } from './content'
+import { onLangChange, usePlates, useT } from './i18n'
 import { hero } from './lib/hero'
 import { openPlate, useRoute } from './lib/route'
 
@@ -19,6 +21,10 @@ export default function App() {
   const finaleOn = useRef(false)
   const onPageRef = useRef(onPage)
   onPageRef.current = onPage
+  const [finale, setFinale] = useState(false)
+  const active = useRef(0)
+  const L = usePlates()
+  const T = useT()
 
   // Abrir: guarda a posição da placa para o recorte de entrada.
   const onOpen = useCallback((i: number) => {
@@ -27,8 +33,17 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    document.title = onPage ? `${PLATES[pageIndex].title} · Gonçalo Filipe` : 'Início · Gonçalo Filipe'
-  }, [onPage, pageIndex])
+    document.title = onPage ? `${L[pageIndex].title} · Gonçalo Filipe` : `${T.docHome} · Gonçalo Filipe`
+  }, [onPage, pageIndex, L, T])
+
+  // Mudança de língua (só acontece no Início): o avatar confirma na nova língua.
+  useEffect(
+    () =>
+      onLangChange(() => {
+        if (ready.current && !onPageRef.current) cg.languageChanged(active.current)
+      }),
+    [],
+  )
 
   // Entrar e sair das páginas: trancar o scroll do herói, deixá-lo na placa certa, devolver o foco.
   useEffect(() => {
@@ -50,6 +65,7 @@ export default function App() {
 
   const onActive = useCallback(
     (i: number) => {
+      active.current = i
       if (!ready.current || onPage) return
       touched.current = true
       window.clearTimeout(introTimer.current)
@@ -64,6 +80,7 @@ export default function App() {
   const onFinale = useCallback(
     (on: boolean) => {
       finaleOn.current = on
+      setFinale(on)
       if (on && !onPage) {
         window.clearTimeout(introTimer.current)
         cg.finale()
@@ -86,6 +103,7 @@ export default function App() {
     <>
       <Hero paused={onPage} onOpen={onOpen} onActive={onActive} onFinale={onFinale} onReady={onReady} />
       {onPage && <PlatePage index={pageIndex} from={fromRect.current} />}
+      <Prefs visible={!onPage && !finale} />
       <CiberGoncalo placement={onPage ? 'page' : 'home'} />
     </>
   )

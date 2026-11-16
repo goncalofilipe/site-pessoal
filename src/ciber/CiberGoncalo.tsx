@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import avatar from '../../assets/ciber-goncalo.png'
 import { prefersReducedMotion } from '../lib/motion'
 import { setOpen, useCiber } from './store'
+import { useT } from '../i18n'
 
 // Escreve o texto letra a letra; um clique no texto mostra-o todo.
 function useTypewriter(text: string, id: number) {
@@ -27,18 +28,19 @@ export default function CiberGoncalo({ placement }: { placement: 'home' | 'page'
   const { msg, open, unread } = useCiber()
   const { shown, done, finish } = useTypewriter(msg?.text ?? '', msg?.id ?? 0)
   const bubbleRef = useRef<HTMLDivElement>(null)
+  const T = useT()
 
   if (!msg) return null
 
   return (
-    <aside className={`cg cg--${placement}${open ? ' is-open' : ''}${done ? '' : ' is-talking'}`} aria-label="Ciber Gonçalo, guia do site">
+    <aside className={`cg cg--${placement}${open ? ' is-open' : ''}${done ? '' : ' is-talking'}`} aria-label={T.cgAria}>
       {open && (
         <div ref={bubbleRef} className="cg-bubble" key={msg.id}>
           <div className="cg-head">
             <span className="cg-name">
-              Ciber Gonçalo <i className="cg-dot" aria-hidden="true" />
+              {T.cgName} <i className="cg-dot" aria-hidden="true" />
             </span>
-            <button type="button" className="cg-min" onClick={() => setOpen(false)} aria-label="Minimizar o Ciber Gonçalo">
+            <button type="button" className="cg-min" onClick={() => setOpen(false)} aria-label={T.cgMin}>
               –
             </button>
           </div>
@@ -72,7 +74,7 @@ export default function CiberGoncalo({ placement }: { placement: 'home' | 'page'
         className="cg-avatar"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        aria-label={open ? 'Minimizar o Ciber Gonçalo' : unread ? 'Abrir o Ciber Gonçalo: tem uma mensagem nova' : 'Abrir o Ciber Gonçalo'}
+        aria-label={open ? T.cgMin : unread ? T.cgOpenNew : T.cgOpen}
       >
         <img src={avatar} alt="" draggable={false} />
         <span className="cg-scan" aria-hidden="true" />
