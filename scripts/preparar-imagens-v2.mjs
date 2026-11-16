@@ -1,7 +1,8 @@
 // Segunda leva de imagens das placas (enviadas pelo Gonçalo a 2026-11-16). Tudo sai em 3:4, WebP.
 // Uso: node scripts/preparar-imagens-v2.mjs <pasta-com-os-originais>
 // Nomes esperados: noesis-selfie.jpg, outsystems.jpg, diaspora-logo.png, parlamento.jpg,
-// puzzle.jpg, comunicador-mic.png, editor-video.jpg
+// puzzle.jpg, comunicador-mic.png, editor-video.jpg, apresentacao.jpg,
+// organizador.jpeg, comunicador-tv.jpg, associativo.jpg (galerias das páginas)
 import sharp from 'sharp'
 import { join } from 'node:path'
 
@@ -37,6 +38,12 @@ await Promise.all([
   sharp(S('parlamento.jpg')).extract({ left: 212, top: 0, width: 310, height: 413 }).resize(900, 1200, { kernel: 'lanczos3' }).webp({ quality: 82 }).toFile(O('parlamento.webp')),
   // Gonçalo de camisa azul com o microfone
   sharp(S('comunicador-mic.png')).extract({ left: 0, top: 100, width: 746, height: 995 }).resize(1200, 1600).webp({ quality: 80 }).toFile(O('comunicador-mic.webp')),
+  // foto de apresentação no Início (já vem em 3:4)
+  sharp(S('apresentacao.jpg')).rotate().resize(900, 1200, { fit: 'cover', position: 'north' }).webp({ quality: 82 }).toFile(O('apresentacao.webp')),
+  // galerias das páginas: discurso na rua (Organizar a rua), painel de TV (Comunicador), pandeireta (Diáspora)
+  sharp(S('organizador.jpeg')).rotate().resize(900, 1200, { fit: 'cover' }).webp({ quality: 80 }).toFile(O('galeria-organizador.webp')),
+  sharp(S('comunicador-tv.jpg')).rotate().resize(900, 1200, { fit: 'cover', position: 'centre' }).webp({ quality: 84 }).toFile(O('galeria-comunicador-tv.webp')),
+  sharp(S('associativo.jpg')).rotate().extract({ left: 0, top: 450, width: 2268, height: 3024 }).resize(900, 1200).webp({ quality: 80 }).toFile(O('galeria-associativo.webp')),
   // logótipo da Diáspora, branco com transparência
   sharp(S('diaspora-logo.png')).extract({ left: 0, top: 240, width: 1080, height: 1440 }).resize(900, 1200).webp({ quality: 90, alphaQuality: 100 }).toFile(O('diaspora-logo.webp')),
 ])

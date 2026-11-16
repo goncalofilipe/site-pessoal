@@ -10,7 +10,8 @@
 img.fx-rec { animation: fx-kb 22s ease-in-out infinite alternate; }
 
 .fx-float { animation: fx-float 7s ease-in-out infinite; }
-@keyframes fx-float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2.5%) scale(1.02); } }
+/* a escala tem de ser sempre maior do que o dobro da deslocação, senão aparece uma faixa vazia em baixo */
+@keyframes fx-float { 0%, 100% { transform: translateY(0) scale(1.06); } 50% { transform: translateY(-2%) scale(1.08); } }
 
 /* puzzle visto de cima: a mesa roda devagar para um lado e para o outro */
 .fx-spin { animation: fx-spin 16s ease-in-out infinite alternate; transform-origin: 50% 50%; }

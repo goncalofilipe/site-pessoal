@@ -40,8 +40,10 @@
 
 .pg-body {
   min-width: 0;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto; /* centrado na coluna da direita, para não sobrar espaço vazio de um só lado */
   padding: 0 clamp(20px, 5vw, 88px) 96px;
-  max-width: 820px;
 }
 
 .pg-bar {

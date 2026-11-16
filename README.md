@@ -1,6 +1,6 @@
 # Site pessoal · Gonçalo Filipe
 
-Doze placas numa galeria horizontal (fisheye ao scroll, a partir do template Florilegium). Cada placa abre uma página com a experiência ou competência. O Ciber Gonçalo, um avatar em pixel art, acompanha a visita e dá o contexto de cada placa. As falas dele são escritas à mão: não há modelo de IA nem pedidos a serviços externos.
+Uma apresentação em meio ecrã, um carrossel com as placas de programação (fisheye ao scroll, a partir do template Florilegium) e uma grelha estática com as restantes. Cada placa abre uma página com a experiência ou competência. O Ciber Gonçalo, um avatar em pixel art, acompanha a visita e dá o contexto de cada placa. As falas dele são escritas à mão: não há modelo de IA nem pedidos a serviços externos.
 
 ```bash
 npm install
@@ -16,10 +16,12 @@ O GitHub Pages está em "Deploy from a branch", a servir o branch `gh-pages`. O 
 | O quê | Onde |
 |---|---|
 | Textos das placas e das páginas, falas e perguntas do avatar | `src/content.ts` |
-| Contactos, links e CV | `PERSON` em `src/content.ts`; PDFs em `public/cv/` |
+| Contactos e links | `PERSON` em `src/content.ts` (o email copia-se com um clique; não há CV no site) |
 | O que o avatar diz e quando (saudação, final, dicas) | `src/ciber/script.ts` |
 | Ilustrações das placas sem fotografia (SVG 3:4) | `src/PlateArt.tsx` |
-| Galeria, relógio de anos, final | `src/Hero.tsx` |
+| Apresentação e carrossel do código (as primeiras placas, `lente: 'codigo'`) | `src/Hero.tsx` |
+| Grelha estática «Câmara e causa» (as restantes placas) | `src/Mosaico.tsx` |
+| Fecho com os contactos | `src/Fim.tsx` |
 | Página de placa | `src/PlatePage.tsx` |
 | Estilos | `src/styles/` |
 

@@ -46,7 +46,7 @@ export const LENTES_EN: Lentes = {
 
 export const PLATES_EN: Record<string, PlateText> = {
   formacao: {
-    era: 'My education',
+    era: 'my education',
     when: '2012 to 2020',
     title: 'From fixing friends’ computers to consulting',
     note: 'Education · Lisbon and Madrid',
@@ -98,7 +98,7 @@ export const PLATES_EN: Record<string, PlateText> = {
     },
   },
   noesis: {
-    era: 'Consultant',
+    era: 'consultant',
     when: '2019 to 2020',
     title: 'First OutSystems projects',
     note: 'OutSystems · Noesis',
@@ -242,7 +242,7 @@ export const PLATES_EN: Record<string, PlateText> = {
           ],
         },
       ],
-      galleryAlt: ['Barulho Bom poster, with musicians at a Lisbon viewpoint'],
+      galleryAlt: ['Gonçalo playing a tambourine at a street party, with glitter on his face', 'Barulho Bom poster, with musicians at a Lisbon viewpoint'],
       tools: ['Event production', 'Association management', 'Instagram', 'Business accounting'],
       linkLabels: ['Instagram @diasporalx'],
     },
@@ -388,7 +388,7 @@ export const PLATES_EN: Record<string, PlateText> = {
           items: ['Commentary on television panels.', 'Reporting on street activism.'],
         },
       ],
-      galleryAlt: ['Gonçalo speaking to camera in a Reel, holding a lapel microphone', 'Gonçalo in a Reel filmed at home, with plants in the background'],
+      galleryAlt: ['Gonçalo on a television commentary panel about the clashes in Porto, with his name on the caption', 'Gonçalo in a Reel filmed at home, with plants in the background'],
       tools: ['Scripting', 'Presenting', 'CapCut', 'Remotion', 'Instagram', 'TikTok'],
       linkLabels: ['Instagram @goncalopmfilipe', 'TikTok @goncalopmfilipe'],
     },
@@ -539,6 +539,7 @@ export const PLATES_EN: Record<string, PlateText> = {
           items: ['Housing demonstrations and grassroots organising for the political empowerment of communities.', 'Communication and taking part in the battle over the national political narrative.'],
         },
       ],
+      galleryAlt: ['Gonçalo speaking at a night-time street action, fist raised, with a red carnation on his chest'],
       tools: ['Organisational diagnosis', 'Process design', 'Roles and permissions', 'Political analysis', 'Mobilisation'],
     },
     cg: {

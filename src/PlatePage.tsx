@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { N, PERSON } from './content'
 import { usePlates, useT } from './i18n'
@@ -6,6 +6,7 @@ import PlateArt from './PlateArt'
 import PlateFx from './PlateFx'
 import { prefersReducedMotion } from './lib/motion'
 import { closePlate, replacePlate } from './lib/route'
+import { copyText } from './lib/clipboard'
 
 type Props = { index: number; from: DOMRect | null }
 
@@ -19,6 +20,13 @@ export default function PlatePage({ index, from }: Props) {
   const prev = index > 0 ? PLATES[index - 1] : null
   const next = index < N - 1 ? PLATES[index + 1] : null
   const first = useRef(true)
+  // última página: o rodapé copia o email
+  const [copied, setCopied] = useState(false)
+  const copyMail = async () => {
+    if (!(await copyText(PERSON.email))) return
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 2400)
+  }
 
   // Entrada: recorte a partir da placa clicada. Ao mudar de placa, só o conteúdo desliza.
   useLayoutEffect(() => {
@@ -47,7 +55,7 @@ export default function PlatePage({ index, from }: Props) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement).closest('input, textarea')) return
+      if ((e.target as Element | null)?.closest?.('input, textarea')) return
       if (e.key === 'Escape') closePlate()
       if (e.key === 'ArrowRight' && next) replacePlate(next.slug)
       if (e.key === 'ArrowLeft' && prev) replacePlate(prev.slug)
@@ -169,12 +177,12 @@ export default function PlatePage({ index, from }: Props) {
                 </span>
               </button>
             ) : (
-              <a className="pg-next" href={`mailto:${PERSON.email}`}>
+              <button type="button" className="pg-next" onClick={copyMail}>
                 <span className="pg-next__k">{T.pageEnd}</span>
-                <span className="pg-next__t">
-                  {PERSON.email} <span aria-hidden="true">→</span>
+                <span className="pg-next__t" aria-live="polite">
+                  {copied ? T.emailCopied : PERSON.email} <span aria-hidden="true">{copied ? '✓' : '⧉'}</span>
                 </span>
-              </a>
+              </button>
             )}
           </footer>
         </article>

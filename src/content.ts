@@ -9,7 +9,9 @@ import imgVideoEditor from '../assets/video-editor.webp'
 import imgVideo from '../assets/video.webp'
 import imgEstrategia from '../assets/estrategia.webp'
 import imgBojarda from '../assets/bojarda.webp'
-import imgReel1 from '../assets/galeria-reel-1.webp'
+import imgComunicadorTv from '../assets/galeria-comunicador-tv.webp'
+import imgOrganizador from '../assets/galeria-organizador.webp'
+import imgAssociativo from '../assets/galeria-associativo.webp'
 import imgReel2 from '../assets/galeria-reel-2.webp'
 import imgReel3 from '../assets/galeria-reel-3.webp'
 import imgReel4 from '../assets/galeria-reel-4.webp'
@@ -62,7 +64,6 @@ export const PERSON = {
   linkedin: 'https://www.linkedin.com/in/goncalo-p-m-filipe',
   instagram: 'https://www.instagram.com/goncalopmfilipe/',
   tiktok: 'https://www.tiktok.com/@goncalopmfilipe',
-  cv: { pt: './cv/CV_Goncalo_Filipe_PT.pdf', en: './cv/CV_Goncalo_Filipe_EN.pdf' },
 }
 
 export type Lentes = Record<Lente, { label: string; first: string; text: string }>
@@ -93,7 +94,7 @@ export const LENTES: Lentes = {
 export const PLATES: Plate[] = [
   {
     slug: 'formacao',
-    era: 'As minhas habilitações',
+    era: 'as minhas habilitações',
     year: 2012,
     when: '2012 a 2020',
     title: 'Dos computadores dos amigos à consultoria',
@@ -150,7 +151,7 @@ export const PLATES: Plate[] = [
   },
   {
     slug: 'noesis',
-    era: 'Consultor',
+    era: 'consultor',
     year: 2019,
     when: '2019 a 2020',
     title: 'Primeiros projetos em OutSystems',
@@ -282,6 +283,118 @@ export const PLATES: Plate[] = [
     },
   },
   {
+    slug: 'produto',
+    era: 'gestor de produto',
+    year: 2025,
+    when: 'Desde 2025',
+    title: 'Gestor de infraestrutura digital',
+    note: 'Gestor de produto e developer de uma organização política de 10 mil pessoas',
+    tint: '#f5f2e9',
+    src: imgProduto,
+    fx: 'spin',
+    lente: 'codigo',
+    page: {
+      kicker: 'Desde 2025 · Project Manager, Product Manager e developer',
+      heading: 'Gestão de produto com as mãos no código.',
+      lead: 'Para uma organização política com cerca de 10 000 pessoas, faço gestão de produto e desenvolvimento ao mesmo tempo. Levanto requisitos com quem não é técnico, desenho a solução, programo, ponho em produção e mantenho a infraestrutura de forma voluntária.',
+      stats: [
+        { value: '~10 000', label: 'pessoas na organização' },
+        { value: '5', label: 'apps institucionais e um CMS open source de governança interna' },
+        { value: '5', label: 'contentores em Docker, a base desta estrutura em servidores próprios' },
+      ],
+      sections: [
+        {
+          title: 'App de militância · beta em outubro de 2026',
+          items: [
+            'Feed, agenda, área pessoal com quotas e pagamentos, e um backoffice para organizadores com papéis e aprovação de eventos.',
+            'Pensada primeiro para o telemóvel, a correr no browser.',
+            'Uma regra de segurança no centro do desenho: a app nunca escreve na plataforma interna e nada de fora entra na rede interna. Um serviço interno vai buscar o trabalho a uma fila e devolve os resultados.',
+            'Fila com estados, contagem de tentativas e reentrega depois de timeout.',
+            'Testes de ponta a ponta, da interface à plataforma simulada, incluindo as regras de permissões.',
+          ],
+        },
+      ],
+      tools: ['Directus', 'Docker', 'TypeScript', 'React', 'Bun', 'zod', 'Tailwind', 'Next.js', 'SQLite', 'Gestão de stakeholders'],
+    },
+    cg: {
+      intro: 'Aqui sou gestor de produto e programador ao mesmo tempo. Dois sites, um CMS em Docker e uma app em beta.',
+      more: 'A decisão de arquitetura de que mais gosto: o serviço interno só faz ligações para fora. Se a app pública cair ou for atacada, a rede interna continua fechada.',
+      qa: [
+        {
+          q: 'Porquê um CMS headless e open source?',
+          a: 'Separa os conteúdos da apresentação. A equipa edita num só sítio e os sites, a app ou uma newsletter vão buscar o mesmo conteúdo por API. Tudo numa lógica de código aberto e mantido pela comunidade.',
+        },
+        {
+          q: 'Como geres e programas ao mesmo tempo?',
+          a: 'Com um backlog curto e visível, entregas pequenas e muito contacto com quem vai usar. Os agentes de IA escrevem parte do código; eu decido a arquitetura e reviso.',
+        },
+        {
+          q: 'Porque é que há uma fila?',
+          a: 'O serviço interno não pode receber ligações de fora. Por isso é ele que vai à API buscar as operações, executa-as na plataforma e devolve o resultado. Se estiver desligado, os pedidos ficam «a processar» até voltar.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'ia',
+    era: 'programar com IA',
+    year: 2026,
+    when: '2025 até hoje',
+    title: 'Ser um consultor autónomo no século XXI',
+    note: 'Engenharia com IA · Claude Code · LLMs abertos',
+    tint: '#141915',
+    dark: true,
+    art: 'terminal',
+    lente: 'codigo',
+    page: {
+      kicker: 'Desde 2025 · Desenvolvimento full-stack assistido por IA',
+      heading: 'Os desafios técnicos são ultrapassados mais rapidamente. Fica o espaço para a criatividade.',
+      lead: 'Construo aplicações completas com o Claude Code. Eu decido a arquitetura, escrevo as regras e revejo. Este site foi feito assim.',
+      stats: [
+        { value: '14', label: 'projetos com o Claude Code desde maio de 2026' },
+        { value: '1 700', label: 'ações registadas dos agentes, de maio a outubro' },
+      ],
+      sections: [
+        {
+          title: 'Alguns projetos',
+          items: [
+            'Portal Docker: gestão de um servidor interno, com diagnóstico por scripts e um assistente de IA que só propõe alterações. Nada corre sem confirmação escrita e os dados pessoais saem antes de qualquer envio a um fornecedor de IA.',
+            'Central Claude: um painel local para ver e mudar toda a configuração do Claude Code e do Claude Desktop.',
+            'Fora da Bolha: análise de contas de Instagram com classificação de comentários e diagnósticos por IA.',
+          ],
+        },
+        {
+          title: 'Como trabalho com agentes',
+          items: [
+            'Um CLAUDE.md por projeto, com as regras e as fronteiras entre módulos.',
+            'Subagentes próprios, por exemplo um revisor que só pode ler.',
+            'Revisão visual com Playwright e demos gravadas automaticamente.',
+            'Fornecedor de IA intercambiável: API da Anthropic, serviços compatíveis ou modelos locais.',
+          ],
+        },
+      ],
+      tools: ['Claude Code', 'API da Anthropic', 'TypeScript', 'Bun', 'Node.js', 'Phaser', 'Playwright', 'Docker', 'Python'],
+    },
+    cg: {
+      intro: 'Construo software com assistentes de IA: eu decido, eles escrevem, eu revejo e direciono.',
+      more: 'Há vários projetos que desenvolvo pro bono e outros que desenvolvo antes de receber qualquer remuneração por eles.',
+      qa: [
+        {
+          q: 'Isso não é batota?',
+          a: 'É ferramenta. As decisões difíceis continuam a ser minhas: onde passa a fronteira de segurança, o que fica em fila, o que se testa. O assistente acelera a escrita; a responsabilidade é minha.',
+        },
+        {
+          q: 'Tu és uma IA?',
+          a: 'Não. Sou um avatar com respostas escritas pelo Gonçalo. Nada do que fazes nesta página é enviado para lado nenhum.',
+        },
+        {
+          q: 'Que modelos usas?',
+          a: 'Sobretudo Claude, pelo Claude Code e pela API.',
+        },
+      ],
+    },
+  },
+  {
     slug: 'diaspora',
     era: 'dirigente associativo',
     year: 2024,
@@ -314,7 +427,10 @@ export const PLATES: Plate[] = [
           ],
         },
       ],
-      gallery: [{ src: imgDiaspora, alt: 'Cartaz do Barulho Bom, com músicos num miradouro de Lisboa' }],
+      gallery: [
+        { src: imgAssociativo, alt: 'Gonçalo a tocar pandeireta numa festa de rua, com purpurinas na cara' },
+        { src: imgDiaspora, alt: 'Cartaz do Barulho Bom, com músicos num miradouro de Lisboa' },
+      ],
       tools: ['Produção de eventos', 'Gestão associativa', 'Instagram', 'Contabilidade empresarial'],
       links: [{ label: 'Instagram @diasporalx', href: 'https://www.instagram.com/diasporalx/' }],
     },
@@ -388,59 +504,6 @@ export const PLATES: Plate[] = [
     },
   },
   {
-    slug: 'produto',
-    era: 'gestor de produto',
-    year: 2025,
-    when: 'Desde 2025',
-    title: 'Gestor de infraestrutura digital',
-    note: 'Gestor de produto e developer de uma organização política de 10 mil pessoas',
-    tint: '#f5f2e9',
-    src: imgProduto,
-    fx: 'spin',
-    lente: 'codigo',
-    page: {
-      kicker: 'Desde 2025 · Project Manager, Product Manager e developer',
-      heading: 'Gestão de produto com as mãos no código.',
-      lead: 'Para uma organização política com cerca de 10 000 pessoas, faço gestão de produto e desenvolvimento ao mesmo tempo. Levanto requisitos com quem não é técnico, desenho a solução, programo, ponho em produção e mantenho a infraestrutura de forma voluntária.',
-      stats: [
-        { value: '~10 000', label: 'pessoas na organização' },
-        { value: '5', label: 'apps institucionais e um CMS open source de governança interna' },
-        { value: '5', label: 'contentores em Docker, a base desta estrutura em servidores próprios' },
-      ],
-      sections: [
-        {
-          title: 'App de militância · beta em outubro de 2026',
-          items: [
-            'Feed, agenda, área pessoal com quotas e pagamentos, e um backoffice para organizadores com papéis e aprovação de eventos.',
-            'Pensada primeiro para o telemóvel, a correr no browser.',
-            'Uma regra de segurança no centro do desenho: a app nunca escreve na plataforma interna e nada de fora entra na rede interna. Um serviço interno vai buscar o trabalho a uma fila e devolve os resultados.',
-            'Fila com estados, contagem de tentativas e reentrega depois de timeout.',
-            'Testes de ponta a ponta, da interface à plataforma simulada, incluindo as regras de permissões.',
-          ],
-        },
-      ],
-      tools: ['Directus', 'Docker', 'TypeScript', 'React', 'Bun', 'zod', 'Tailwind', 'Next.js', 'SQLite', 'Gestão de stakeholders'],
-    },
-    cg: {
-      intro: 'Aqui sou gestor de produto e programador ao mesmo tempo. Dois sites, um CMS em Docker e uma app em beta.',
-      more: 'A decisão de arquitetura de que mais gosto: o serviço interno só faz ligações para fora. Se a app pública cair ou for atacada, a rede interna continua fechada.',
-      qa: [
-        {
-          q: 'Porquê um CMS headless e open source?',
-          a: 'Separa os conteúdos da apresentação. A equipa edita num só sítio e os sites, a app ou uma newsletter vão buscar o mesmo conteúdo por API. Tudo numa lógica de código aberto e mantido pela comunidade.',
-        },
-        {
-          q: 'Como geres e programas ao mesmo tempo?',
-          a: 'Com um backlog curto e visível, entregas pequenas e muito contacto com quem vai usar. Os agentes de IA escrevem parte do código; eu decido a arquitetura e reviso.',
-        },
-        {
-          q: 'Porque é que há uma fila?',
-          a: 'O serviço interno não pode receber ligações de fora. Por isso é ele que vai à API buscar as operações, executa-as na plataforma e devolve o resultado. Se estiver desligado, os pedidos ficam «a processar» até voltar.',
-        },
-      ],
-    },
-  },
-  {
     slug: 'comunicador',
     era: 'comunicador',
     year: 2025,
@@ -480,7 +543,7 @@ export const PLATES: Plate[] = [
         },
       ],
       gallery: [
-        { src: imgReel1, alt: 'Gonçalo a falar para a câmara num Reel, com microfone de lapela na mão' },
+        { src: imgComunicadorTv, alt: 'Gonçalo num painel de comentário em televisão sobre os confrontos no Porto, com o nome no oráculo' },
         { src: imgReel4, alt: 'Gonçalo num Reel gravado em casa, com plantas ao fundo' },
       ],
       tools: ['Guião', 'Apresentação', 'CapCut', 'Remotion', 'Instagram', 'TikTok'],
@@ -570,65 +633,6 @@ export const PLATES: Plate[] = [
     },
   },
   {
-    slug: 'ia',
-    era: 'programar com IA',
-    year: 2026,
-    when: '2025 até hoje',
-    title: 'Ser um consultor autónomo no século XXI',
-    note: 'Engenharia com IA · Claude Code · LLMs abertos',
-    tint: '#141915',
-    dark: true,
-    art: 'terminal',
-    lente: 'codigo',
-    page: {
-      kicker: 'Desde 2025 · Desenvolvimento full-stack assistido por IA',
-      heading: 'Os desafios técnicos são ultrapassados mais rapidamente. Fica o espaço para a criatividade.',
-      lead: 'Construo aplicações completas com o Claude Code. Eu decido a arquitetura, escrevo as regras e revejo. Este site foi feito assim.',
-      stats: [
-        { value: '14', label: 'projetos com o Claude Code desde maio de 2026' },
-        { value: '1 700', label: 'ações registadas dos agentes, de maio a outubro' },
-      ],
-      sections: [
-        {
-          title: 'Alguns projetos',
-          items: [
-            'Portal Docker: gestão de um servidor interno, com diagnóstico por scripts e um assistente de IA que só propõe alterações. Nada corre sem confirmação escrita e os dados pessoais saem antes de qualquer envio a um fornecedor de IA.',
-            'Central Claude: um painel local para ver e mudar toda a configuração do Claude Code e do Claude Desktop.',
-            'Fora da Bolha: análise de contas de Instagram com classificação de comentários e diagnósticos por IA.',
-          ],
-        },
-        {
-          title: 'Como trabalho com agentes',
-          items: [
-            'Um CLAUDE.md por projeto, com as regras e as fronteiras entre módulos.',
-            'Subagentes próprios, por exemplo um revisor que só pode ler.',
-            'Revisão visual com Playwright e demos gravadas automaticamente.',
-            'Fornecedor de IA intercambiável: API da Anthropic, serviços compatíveis ou modelos locais.',
-          ],
-        },
-      ],
-      tools: ['Claude Code', 'API da Anthropic', 'TypeScript', 'Bun', 'Node.js', 'Phaser', 'Playwright', 'Docker', 'Python'],
-    },
-    cg: {
-      intro: 'Construo software com assistentes de IA: eu decido, eles escrevem, eu revejo e direciono.',
-      more: 'Há vários projetos que desenvolvo pro bono e outros que desenvolvo antes de receber qualquer remuneração por eles.',
-      qa: [
-        {
-          q: 'Isso não é batota?',
-          a: 'É ferramenta. As decisões difíceis continuam a ser minhas: onde passa a fronteira de segurança, o que fica em fila, o que se testa. O assistente acelera a escrita; a responsabilidade é minha.',
-        },
-        {
-          q: 'Tu és uma IA?',
-          a: 'Não. Sou um avatar com respostas escritas pelo Gonçalo. Nada do que fazes nesta página é enviado para lado nenhum.',
-        },
-        {
-          q: 'Que modelos usas?',
-          a: 'Sobretudo Claude, pelo Claude Code e pela API.',
-        },
-      ],
-    },
-  },
-  {
     slug: 'estrategia',
     era: 'organizador',
     year: 2026,
@@ -662,6 +666,7 @@ export const PLATES: Plate[] = [
           ],
         },
       ],
+      gallery: [{ src: imgOrganizador, alt: 'Gonçalo a discursar à noite numa ação de rua, de punho erguido e com um cravo vermelho ao peito' }],
       tools: ['Diagnóstico organizacional', 'Desenho de processos', 'Papéis e permissões', 'Análise política', 'Mobilização'],
     },
     cg: {
@@ -725,4 +730,7 @@ export const PLATES: Plate[] = [
 ]
 
 export const N = PLATES.length
+// As placas de programação vêm primeiro e são as do carrossel; as restantes ficam na grelha estática.
+export const NC = PLATES.findIndex((p) => p.lente !== 'codigo')
+if (PLATES.slice(NC).some((p) => p.lente === 'codigo')) throw new Error('content.ts: as placas de código têm de vir todas primeiro')
 export const indexOf = (slug: string) => PLATES.findIndex((p) => p.slug === slug)

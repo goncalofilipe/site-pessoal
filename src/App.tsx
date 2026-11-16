@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Hero from './Hero'
+import Mosaico from './Mosaico'
+import Fim from './Fim'
 import PlatePage from './PlatePage'
 import CiberGoncalo from './ciber/CiberGoncalo'
 import Prefs from './Prefs'
@@ -18,10 +20,11 @@ export default function App() {
   const ready = useRef(false)
   const introTimer = useRef<number | undefined>(undefined)
   const touched = useRef(false)
-  const finaleOn = useRef(false)
   const onPageRef = useRef(onPage)
   onPageRef.current = onPage
-  const [finale, setFinale] = useState(false)
+  // dentro do carrossel (falso depois de a página passar para a grelha e o fecho)
+  const [inHero, setInHero] = useState(true)
+  const inHeroRef = useRef(true)
   const active = useRef(0)
   const L = usePlates()
   const T = useT()
@@ -71,23 +74,29 @@ export default function App() {
       window.clearTimeout(introTimer.current)
       // espera que o scroll assente antes de falar
       introTimer.current = window.setTimeout(() => {
-        if (!finaleOn.current) cg.plateIntro(i)
+        if (inHeroRef.current) cg.plateIntro(i)
       }, 450)
     },
     [onPage],
   )
 
-  const onFinale = useCallback(
-    (on: boolean) => {
-      finaleOn.current = on
-      setFinale(on)
-      if (on && !onPage) {
-        window.clearTimeout(introTimer.current)
-        cg.finale()
-      }
-    },
-    [onPage],
-  )
+  const onInHero = useCallback((inside: boolean) => {
+    inHeroRef.current = inside
+    setInHero(inside)
+  }, [])
+
+  // a grelha e o fecho apresentam-se quando entram no ecrã
+  const onGridSeen = useCallback(() => {
+    if (!ready.current || onPageRef.current) return
+    touched.current = true
+    window.clearTimeout(introTimer.current)
+    cg.gridIntro()
+  }, [])
+  const onEndSeen = useCallback(() => {
+    if (!ready.current || onPageRef.current) return
+    window.clearTimeout(introTimer.current)
+    cg.finale()
+  }, [])
 
   const onReady = useCallback(() => {
     ready.current = true
@@ -101,9 +110,13 @@ export default function App() {
 
   return (
     <>
-      <Hero paused={onPage} onOpen={onOpen} onActive={onActive} onFinale={onFinale} onReady={onReady} />
+      <main className="fl-root" aria-hidden={onPage || undefined} inert={onPage || undefined}>
+        <Hero paused={onPage} onOpen={onOpen} onActive={onActive} onInHero={onInHero} onReady={onReady} />
+        <Mosaico onOpen={onOpen} onSeen={onGridSeen} />
+        <Fim onSeen={onEndSeen} />
+      </main>
       {onPage && <PlatePage index={pageIndex} from={fromRect.current} />}
-      <Prefs visible={!onPage && !finale} />
+      <Prefs visible={!onPage && inHero} />
       <CiberGoncalo placement={onPage ? 'page' : 'home'} />
     </>
   )

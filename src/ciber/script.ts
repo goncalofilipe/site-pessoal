@@ -4,6 +4,7 @@ import { N, PERSON, type Lente } from '../content'
 import { getLang, lentesFor, platesFor, t } from '../i18n'
 import { hero } from '../lib/hero'
 import { closePlate, openPlate, replacePlate } from '../lib/route'
+import { copyText } from '../lib/clipboard'
 import { say, type Chip } from './store'
 
 const compact = () => window.innerWidth < 700
@@ -17,7 +18,9 @@ const lensChips = (except?: Lente): Chip[] =>
     .filter((l) => l !== except)
     .map((l) => ({ label: lentes()[l].label, run: () => lens(l) }))
 
-export const greet = () => say(t().greet, [{ label: t().whoQ, run: whoIs }, ...lensChips()], { open: true })
+// No arranque a apresentação (foto e texto) ocupa a esquerda e o carrossel está empurrado para a direita:
+// o balão só abre sozinho em ecrãs muito largos; nos outros fica o aviso de mensagem nova no avatar.
+export const greet = () => say(t().greet, [{ label: t().whoQ, run: whoIs }, ...lensChips()], { open: window.innerWidth >= 1700 })
 
 export const whoIs = () => say(t().whoA, lensChips(), { echo: t().whoQ, open: true })
 
@@ -71,12 +74,16 @@ export const contact = () =>
   say(
     t().contact(PERSON.email),
     [
-      { label: t().chipEmail, run: () => {}, href: `mailto:${PERSON.email}` },
+      { label: t().chipCopy, run: copyEmail },
       { label: 'LinkedIn', run: () => {}, href: PERSON.linkedin },
-      { label: t().chipCv, run: () => {}, href: PERSON.cv[getLang()] },
     ],
     { echo: t().chipTalk, open: true },
   )
+
+const copyEmail = async () => {
+  const ok = await copyText(PERSON.email)
+  say(ok ? t().chipCopied(PERSON.email) : t().emailCopyFailed + ': ' + PERSON.email, [{ label: 'LinkedIn', run: () => {}, href: PERSON.linkedin }], { echo: t().chipCopy, open: true })
+}
 
 export const finale = () =>
   say(
@@ -90,6 +97,9 @@ export const finale = () =>
   )
 
 export const hint = () => say(t().tip, lensChips())
+
+// Quando a grelha «Câmara e causa» entra no ecrã
+export const gridIntro = () => say(t().gridIntro, lensChips('codigo'), { open: narrow() ? false : undefined })
 
 // Depois de mudar de língua: confirma na nova língua e retoma a placa ativa.
 export const languageChanged = (active: number) =>
