@@ -195,6 +195,7 @@ export const PLATES_EN: Record<string, PlateText> = {
           ],
         },
       ],
+      galleryAlt: ['Illustration of an OutSystems workstation on a red background'],
       tools: ['OutSystems 11', 'BPT', 'Timers', 'Multi-tenancy', 'OAuth', 'REST', 'Google Maps API', 'Advanced SQL', 'LifeTime', 'Scrum'],
     },
     cg: {

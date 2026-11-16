@@ -218,10 +218,9 @@ export const PLATES: Plate[] = [
     when: '2020 a 2025',
     title: 'Cinco anos na Alter Solutions / act digital',
     note: 'Senior OutSystems · act digital · Randstad',
-    tint: '#a61c01',
+    tint: '#050505',
     dark: true,
-    src: imgAct,
-    fx: 'float',
+    art: 'fluxo',
     lente: 'codigo',
     page: {
       kicker: 'Nov. 2020 a jun. 2025 · Senior OutSystems Developer · Alter Solutions / act digital · Randstad',
@@ -261,6 +260,7 @@ export const PLATES: Plate[] = [
           ],
         },
       ],
+      gallery: [{ src: imgAct, alt: 'Ilustração de um posto de trabalho OutSystems em fundo vermelho' }],
       tools: ['OutSystems 11', 'BPT', 'Timers', 'Multi-tenancy', 'OAuth', 'REST', 'Google Maps API', 'SQL avançado', 'LifeTime', 'Scrum'],
     },
     cg: {

@@ -111,35 +111,117 @@ function Pulso() {
   )
 }
 
+// Fluxo de automação low-code: linhas brancas sobre preto que se desenham, impulsos de luz a percorrê-las
+// e decisões (losangos) que acendem. Inspirado num diagrama de workflow; desenho próprio.
+const FLOW_LINES = [
+  'M31 125 H300',
+  'M82 52 V125',
+  'M176 125 C186 125 194 120 194 108 V36',
+  'M194 78 H222 C230 78 234 84 234 92 V113 C234 121 238 125 246 125 H300',
+  'M108 125 C116 125 121 130 121 138 V352',
+  'M121 170 H94 C87 170 82 175 82 182 V217',
+  'M0 217 H104 C114 217 121 222 121 232',
+  'M121 255 C121 268 126 275 136 275 H194',
+  'M194 170 V275',
+  'M194 200 C194 210 200 217 210 217 H224 C230 217 234 222 234 230 V275',
+  'M157 217 V300 C157 312 150 318 140 318 H132 C125 318 121 324 121 332',
+  'M121 352 V362 C121 372 127 378 137 378 H300',
+]
+// percursos dos impulsos: [caminho, duração (s), início (s)]
+const FLOW_PULSES: [string, number, number][] = [
+  ['M31 125 H176 C186 125 194 120 194 108 V78 H222 C230 78 234 84 234 92 V113 C234 121 238 125 246 125 H300', 4.2, 0.4],
+  ['M31 125 H108 C116 125 121 130 121 138 V255 C121 268 126 275 136 275 H194', 4, 1.5],
+  ['M0 217 H104 C114 217 121 222 121 232 V362 C121 372 127 378 137 378 H300', 5, 0.9],
+  ['M157 217 V300 C157 312 150 318 140 318 H132 C125 318 121 324 121 332 V362 C121 372 127 378 137 378 H300', 4.6, 2.6],
+  ['M194 170 V200 C194 210 200 217 210 217 H224 C230 217 234 222 234 230 V275', 2.8, 2],
+]
+const FLOW_NODES: [number, number][] = [[82, 125], [194, 78], [121, 170], [194, 170], [157, 217]]
+const FLOW_DIAMONDS: [number, number, number][] = [[158, 125, 0.3], [82, 217, 1.4], [194, 275, 2.1], [121, 348, 2.9]]
+const FLOW_SQUARES: [number, number][] = [[82, 52], [234, 275]]
+
 function Fluxo() {
   const a = useArt()
-  const ink = '#24221e'
-  const accent = '#c8452c'
-  const node = (y: number, label: string) => (
-    <g>
-      <rect x="96" y={y} width="108" height="30" rx="3" fill="none" stroke={ink} strokeWidth="0.9" />
-      <text x="150" y={y + 19} fill={ink} fontSize="8.5" style={mono} textAnchor="middle">{label}</text>
-    </g>
-  )
+  const { reduced, id } = useLoop(4)
+  const white = '#f4f4f0'
   return (
-    <Frame ink={ink} label="ACT DIGITAL · RANDSTAD" year="2020/2025">
-      <circle cx="150" cy="66" r="9" fill="none" stroke={ink} strokeWidth="0.9" />
-      <line x1="150" y1="75" x2="150" y2="92" stroke={ink} strokeWidth="0.9" />
-      {node(92, 'GETVAGAS')}
-      <line x1="150" y1="122" x2="150" y2="140" stroke={ink} strokeWidth="0.9" />
-      <path d="M150 140 L178 162 L150 184 L122 162 Z" fill="none" stroke={accent} strokeWidth="1.1" />
-      <text x="150" y="165" fill={accent} fontSize="8" style={mono} textAnchor="middle">IF</text>
-      <path d="M122 162 H62 V206" fill="none" stroke={ink} strokeWidth="0.9" />
-      <path d="M178 162 H238 V206" fill="none" stroke={ink} strokeWidth="0.9" />
-      <rect x="22" y="206" width="80" height="30" rx="3" fill="none" stroke={ink} strokeWidth="0.9" />
-      <text x="62" y="225" fill={ink} fontSize="8" style={mono} textAnchor="middle">BPT</text>
-      <rect x="198" y="206" width="80" height="30" rx="3" fill="none" stroke={ink} strokeWidth="0.9" />
-      <text x="238" y="225" fill={ink} fontSize="8" style={mono} textAnchor="middle">REST</text>
-      <path d="M62 236 V262 H150 M238 236 V262 H150 V276" fill="none" stroke={ink} strokeWidth="0.9" />
-      <circle cx="150" cy="285" r="9" fill={ink} />
-      <text x="18" y="352" fill={ink} fontSize="34" style={{ ...serif, fontStyle: 'italic' }}>{a.lowcode}</text>
-      <text x="18" y="384" fill={ink} fontSize="22" style={serif}>{a.volume}</text>
-    </Frame>
+    <>
+      <rect width="300" height="400" fill="#050505" />
+      <defs>
+        {/* as linhas esbatem-se junto às margens */}
+        <linearGradient id={`${id}fh`} x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="#000" />
+          <stop offset="0.08" stopColor="#fff" />
+          <stop offset="0.86" stopColor="#fff" />
+          <stop offset="1" stopColor="#000" />
+        </linearGradient>
+        <linearGradient id={`${id}fv`} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0.08" stopColor="#000" />
+          <stop offset="0.16" stopColor="#fff" />
+          <stop offset="1" stopColor="#fff" />
+        </linearGradient>
+        <mask id={`${id}mh`}>
+          <rect width="300" height="400" fill={`url(#${id}fh)`} />
+        </mask>
+        <mask id={`${id}mv`}>
+          <rect width="300" height="400" fill={`url(#${id}fv)`} />
+        </mask>
+        <pattern id={`${id}dots`} width="4" height="4" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.55" fill={white} opacity="0.35" />
+        </pattern>
+        <radialGradient id={`${id}glow`}>
+          <stop offset="0" stopColor="#fff" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      <text x="14" y="22" fill={white} fontSize="7.5" style={mono}>ACT DIGITAL · RANDSTAD</text>
+      <rect x="128" y="14" width="160" height="12" fill={`url(#${id}dots)`} />
+
+      <g mask={`url(#${id}mv)`}>
+        <g mask={`url(#${id}mh)`} fill="none" stroke={white} strokeWidth="1.3" strokeLinecap="butt">
+          {FLOW_LINES.map((d, k) => (
+            <path key={k} d={d} pathLength={1} strokeDasharray="1" strokeDashoffset={reduced ? 0 : 1}>
+              {!reduced && <animate attributeName="stroke-dashoffset" from="1" to="0" dur="1.3s" begin={`${0.15 + k * 0.1}s`} fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.3 0 0.2 1" />}
+            </path>
+          ))}
+        </g>
+
+        {/* impulsos de luz a percorrer o fluxo */}
+        {!reduced &&
+          FLOW_PULSES.map(([d, dur, begin], k) => (
+            <g key={k} opacity="0">
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.88;1" dur={`${dur}s`} begin={`${begin + 1.4}s`} repeatCount="indefinite" />
+              <animateMotion path={d} dur={`${dur}s`} begin={`${begin + 1.4}s`} repeatCount="indefinite" calcMode="linear" />
+              <circle r="7" fill={`url(#${id}glow)`} opacity="0.5" />
+              <circle r="2.3" fill="#fff" />
+            </g>
+          ))}
+      </g>
+
+      {/* nó de arranque */}
+      <rect x="13" y="107" width="36" height="36" rx="9" fill={white} />
+      <circle cx="31" cy="125" r="9.5" fill="#050505" />
+      <circle cx="31" cy="125" r="4.2" fill={white}>
+        {!reduced && <animate attributeName="r" values="4.2;5.2;4.2" dur="2.4s" repeatCount="indefinite" />}
+      </circle>
+
+      {FLOW_NODES.map(([x, y], k) => (
+        <circle key={k} cx={x} cy={y} r="5.2" fill={white} />
+      ))}
+      {FLOW_SQUARES.map(([x, y], k) => (
+        <rect key={k} x={x - 4.5} y={y - 4.5} width="9" height="9" rx="1.6" fill={white} />
+      ))}
+      {FLOW_DIAMONDS.map(([x, y, at], k) => (
+        <rect key={k} x={x - 4.6} y={y - 4.6} width="9.2" height="9.2" fill="#050505" stroke={white} strokeWidth="1.3" transform={`rotate(45 ${x} ${y})`}>
+          {!reduced && <animate attributeName="fill" values="#050505;#050505;#f4f4f0;#050505" keyTimes="0;0.7;0.78;1" dur="3.6s" begin={`${at + 1.4}s`} repeatCount="indefinite" />}
+        </rect>
+      ))}
+
+      {/* à direita, por cima da última linha: o canto inferior direito é da pílula «Abrir» e o esquerdo do avatar */}
+      <text x="286" y="362" fill={white} fontSize="13" fontWeight="700" textAnchor="end" style={{ letterSpacing: '-0.01em' }}>
+        {a.lowcode} {a.volume}
+      </text>
+    </>
   )
 }
 
