@@ -88,7 +88,8 @@ export default function Hero({ paused, onOpen, onActive, onInHero, onReady }: Pr
 
   /* ------------------------------------------------------ smooth scroll */
   useEffect(() => {
-    if (reduced) return
+    // no telemóvel o scroll é sempre nativo (o Lenis não suaviza o toque e só atrapalharia os ajustes abaixo)
+    if (reduced || horizontal) return
     const lenis = new Lenis({ lerp: 0.08 })
     lenisRef.current = lenis
     lenis.on('scroll', ScrollTrigger.update)
@@ -100,7 +101,7 @@ export default function Hero({ paused, onOpen, onActive, onInHero, onReady }: Pr
       lenis.destroy()
       lenisRef.current = null
     }
-  }, [reduced])
+  }, [reduced, horizontal])
 
   /* ------------------------------------------- layout fisheye por frame */
   useLayoutEffect(() => {
@@ -130,6 +131,45 @@ export default function Hero({ paused, onOpen, onActive, onInHero, onReady }: Pr
     let lastActive = -1
     let lastInside = true
     let locked = false
+
+    // Telemóvel: a fronteira entre o carrossel e a grelha tem só dois estados. Quando o scroll vertical
+    // para a meio caminho, a página acaba o movimento na direção em que ia: a subir, volta ao carrossel
+    // inteiro; a descer, vai para o início da grelha. Assim o carrossel nunca fica cortado.
+    let lastWinScroll = 0
+    let lastY = window.scrollY
+    let dir = 0
+    let touching = false
+    let settleTimer: number | undefined
+    const settle = () => {
+      if (!horizontal || touching) return
+      const h = track.offsetHeight
+      const y = window.scrollY
+      if (y <= 2 || y >= h - 2) return
+      window.scrollTo({ top: dir < 0 ? 0 : h, behavior: reduced ? 'auto' : 'smooth' })
+    }
+    const onWinScroll = () => {
+      lastWinScroll = performance.now()
+      const y = window.scrollY
+      if (y !== lastY) dir = y < lastY ? -1 : 1
+      lastY = y
+      window.clearTimeout(settleTimer)
+      settleTimer = window.setTimeout(settle, 160)
+    }
+    const onWinTouchStart = () => {
+      touching = true
+      window.clearTimeout(settleTimer)
+    }
+    const onWinTouchEnd = () => {
+      touching = false
+      window.clearTimeout(settleTimer)
+      settleTimer = window.setTimeout(settle, 220)
+    }
+    if (horizontal) {
+      window.addEventListener('scroll', onWinScroll, { passive: true })
+      window.addEventListener('touchstart', onWinTouchStart, { passive: true })
+      window.addEventListener('touchend', onWinTouchEnd, { passive: true })
+      window.addEventListener('touchcancel', onWinTouchEnd, { passive: true })
+    }
 
     // Tentativas de scroll vertical com a página presa: a roda passa a andar no carrossel e um gesto
     // vertical com o dedo faz as placas abanar para o lado, a mostrar o caminho.
@@ -252,7 +292,9 @@ export default function Hero({ paused, onOpen, onActive, onInHero, onReady }: Pr
 
       // Telemóvel: enquanto o carrossel não chega à última placa, a página não desce
       // (só com o carrossel no topo, para nunca prender quem já está a meio da página).
-      const lock = horizontal && f < NC - 1.1 && window.scrollY < 4
+      // só prende com a página parada: mudar o overflow a meio de um movimento pode cancelar o gesto
+      const settled = performance.now() - lastWinScroll > 200 && !touching
+      const lock = horizontal && f < NC - 1.1 && window.scrollY < 4 && (locked || settled)
       if (lock !== locked) {
         locked = lock
         document.documentElement.classList.toggle('is-hlock', lock)
@@ -281,6 +323,11 @@ export default function Hero({ paused, onOpen, onActive, onInHero, onReady }: Pr
       sc?.removeEventListener('wheel', onWheel)
       sc?.removeEventListener('touchstart', onTouchStart)
       sc?.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('scroll', onWinScroll)
+      window.removeEventListener('touchstart', onWinTouchStart)
+      window.removeEventListener('touchend', onWinTouchEnd)
+      window.removeEventListener('touchcancel', onWinTouchEnd)
+      window.clearTimeout(settleTimer)
       document.documentElement.classList.remove('is-hlock')
       st.kill()
       stRef.current = null
